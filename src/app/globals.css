@@ -1,26 +1,202 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf1;
+  --foreground: #151712;
+  --card: #f7f5ee;
+  --card-foreground: #151712;
+  --popover: #ffffff;
+  --popover-foreground: #151712;
+  --primary: #012d1d;
+  --primary-foreground: #ffffff;
+  --secondary: #c1f100;
+  --secondary-foreground: #012d1d;
+  --muted: #f1ede3;
+  --muted-foreground: #5b5f52;
+  --accent: #e9e4d8;
+  --accent-foreground: #151712;
+  --destructive: #c42b3d;
+  --border: #c9c5b8;
+  --input: #c9c5b8;
+  --ring: #a8d600;
+  --chart-1: #012d1d;
+  --chart-2: #2f5a46;
+  --chart-3: #4b7f66;
+  --chart-4: #84a13d;
+  --chart-5: #c1f100;
+  --sidebar: #f1ede3;
+  --sidebar-foreground: #151712;
+  --sidebar-primary: #012d1d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e9e4d8;
+  --sidebar-accent-foreground: #151712;
+  --sidebar-border: #c9c5b8;
+  --sidebar-ring: #a8d600;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-lexend), ui-sans-serif, system-ui, sans-serif;
+  --font-serif:
+    Merriweather, Geist, Geist Fallback, ui-serif, Georgia, Cambria,
+    "Times New Roman", Times, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --radius: 0.25rem;
+
+  --shadow-2xs: 0px 1px 3px 0px rgb(31 67 51 / 0.02);
+  --shadow-xs: 0px 1px 3px 0px rgb(31 67 51 / 0.02);
+  --shadow-sm:
+    0px 1px 3px 0px rgb(31 67 51 / 0.04), 0px 1px 2px -1px rgb(31 67 51 / 0.04);
+  --shadow:
+    0px 1px 3px 0px rgb(31 67 51 / 0.04), 0px 1px 2px -1px rgb(31 67 51 / 0.04);
+  --shadow-md:
+    0px 1px 3px 0px rgb(31 67 51 / 0.04), 0px 2px 4px -1px rgb(31 67 51 / 0.04);
+  --shadow-lg:
+    0px 1px 3px 0px rgb(31 67 51 / 0.04), 0px 4px 6px -1px rgb(31 67 51 / 0.04);
+  --shadow-xl:
+    0px 1px 3px 0px rgb(31 67 51 / 0.04), 0px 8px 10px -1px rgb(31 67 51 / 0.04);
+  --shadow-2xl: 0px 1px 3px 0px rgb(31 67 51 / 0.1);
+}
+
+.dark {
+  --background: #08140f;
+  --foreground: #f4f6ef;
+  --card: #0d1f17;
+  --card-foreground: #f4f6ef;
+  --popover: #0d1f17;
+  --popover-foreground: #f4f6ef;
+  --primary: #c1f100;
+  --primary-foreground: #012d1d;
+  --secondary: #214233;
+  --secondary-foreground: #f4f6ef;
+  --muted: #1a3328;
+  --muted-foreground: #a8b2a1;
+  --accent: #214233;
+  --accent-foreground: #f4f6ef;
+  --destructive: #ff5b6f;
+  --border: #f4f6ef26;
+  --input: #f4f6ef33;
+  --ring: #a8d600;
+  --chart-1: #c1f100;
+  --chart-2: #8fbf44;
+  --chart-3: #5f9c5a;
+  --chart-4: #3f754f;
+  --chart-5: #2f5a46;
+  --sidebar: #0d1f17;
+  --sidebar-foreground: #f4f6ef;
+  --sidebar-primary: #c1f100;
+  --sidebar-primary-foreground: #012d1d;
+  --sidebar-accent: #214233;
+  --sidebar-accent-foreground: #f4f6ef;
+  --sidebar-border: #f4f6ef26;
+  --sidebar-ring: #a8d600;
+
+  --shadow-2xs: 0px 1px 2px 0px rgb(0 0 0 / 0.01);
+  --shadow-xs: 0px 1px 2px 0px rgb(0 0 0 / 0.01);
+  --shadow-sm:
+    0px 1px 2px 0px rgb(0 0 0 / 0.01), 0px 1px 2px -1px rgb(0 0 0 / 0.01);
+  --shadow:
+    0px 1px 2px 0px rgb(0 0 0 / 0.01), 0px 1px 2px -1px rgb(0 0 0 / 0.01);
+  --shadow-md:
+    0px 1px 2px 0px rgb(0 0 0 / 0.01), 0px 2px 4px -1px rgb(0 0 0 / 0.01);
+  --shadow-lg:
+    0px 1px 2px 0px rgb(0 0 0 / 0.01), 0px 4px 6px -1px rgb(0 0 0 / 0.01);
+  --shadow-xl:
+    0px 1px 2px 0px rgb(0 0 0 / 0.01), 0px 8px 10px -1px rgb(0 0 0 / 0.01);
+  --shadow-2xl: 0px 1px 2px 0px rgb(0 0 0 / 0.03);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--muted-foreground);
+  border-radius: 9999px;
+  opacity: 0.2;
+}
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.5;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
 }
