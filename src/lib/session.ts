@@ -6,8 +6,12 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  role: "USER" | "ORGANIZER" | "ADMIN";
+  phone?: string | null;
+  avatarUrl?: string | null;
   image?: string | null;
-  role: "student" | "tutor" | "admin";
+  isApproved?: boolean;
+  stripeCustomerId?: string | null;
   isBlocked?: boolean;
   emailVerified: boolean;
 }

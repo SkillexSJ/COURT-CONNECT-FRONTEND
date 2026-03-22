@@ -1,28 +1,18 @@
 import type { ReactNode } from "react";
 
 import { Header } from "@/components/shared/header";
-import type { Session } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
-const dummySession: Session = {
-  user: {
-    id: "demo-user-1",
-    email: "demo.user@courtconnect.dev",
-    name: "Demo User",
-    image: "https://i.pravatar.cc/120?img=12",
-    role: "student",
-    emailVerified: true,
-    isBlocked: false,
-  },
-  session: {
-    id: "demo-session-1",
-    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
-  },
-};
+export default async function CommonLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const session = await getSession();
 
-export default function CommonLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <Header initialSession={dummySession} />
+      <Header initialSession={session} />
       <main className="flex-1">{children}</main>
       {/* <Footer />  */}
     </div>
