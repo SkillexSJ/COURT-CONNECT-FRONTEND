@@ -1,0 +1,288 @@
+import { apiClient, type FetchOptions } from "@/lib/api-client";
+import type { ApiResponse, ListApiResponse } from "@/types/response";
+
+export type CourtStatus =
+  | "PENDING_APPROVAL"
+  | "ACTIVE"
+  | "MAINTENANCE"
+  | "HIDDEN";
+
+export type CreateCourtPayload = {
+  name: string;
+  type: string;
+  locationLabel: string;
+  description?: string;
+  basePrice: number;
+  latitude?: number;
+  longitude?: number;
+};
+
+export type UpdateCourtPayload = Partial<
+  Omit<CreateCourtPayload, "description"> & {
+    description: string;
+    status: CourtStatus;
+  }
+>;
+
+export type CourtQueryParams = {
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+  status?: CourtStatus;
+  type?: string;
+  basePrice?: number;
+};
+
+export type CourtMemberQueryParams = {
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+  status?: string;
+};
+
+export type CourtOrganizerSummary = {
+  id: string;
+  businessName: string | null;
+  user?: {
+    id?: string;
+    name: string;
+    avatarUrl?: string | null;
+  };
+};
+
+export type CourtMediaItem = {
+  url: string;
+  isPrimary?: boolean;
+  publicId?: string;
+};
+
+export type CourtListItem = {
+  id: string;
+  slug: string;
+  name: string;
+  type: string;
+  locationLabel: string;
+  basePrice: string | number;
+  latitude: number | null;
+  longitude: number | null;
+  status: CourtStatus;
+  createdAt: string;
+  organizer?: CourtOrganizerSummary;
+  media?: CourtMediaItem[];
+  _count?: {
+    bookings: number;
+  };
+};
+
+export type CourtAmenity = {
+  id: string;
+  name: string;
+  icon: string | null;
+};
+
+export type CourtSlotTemplate = {
+  id: string;
+  dayOfWeek: number;
+  startMinute: number;
+  endMinute: number;
+  priceOverride: string | number | null;
+  isActive: boolean;
+};
+
+export type CourtDetails = {
+  id: string;
+  organizerId: string;
+  name: string;
+  slug: string;
+  type: string;
+  locationLabel: string;
+  description: string | null;
+  basePrice: string | number;
+  latitude: number | null;
+  longitude: number | null;
+  status: CourtStatus;
+  createdAt: string;
+  updatedAt: string;
+  organizer: CourtOrganizerSummary & {
+    bio?: string | null;
+    user?: {
+      id: string;
+      name: string;
+      avatarUrl: string | null;
+    };
+  };
+  media: CourtMediaItem[];
+  amenities: CourtAmenity[];
+  slotTemplates: CourtSlotTemplate[];
+  _count: {
+    bookings: number;
+  };
+};
+
+export type CourtMember = {
+  id: string;
+  bookingCode: string;
+  bookingDate: string;
+  status: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl: string | null;
+  };
+};
+
+const buildQueryString = (
+  params?: Record<string, string | number | boolean | undefined | null>,
+) => {
+  if (!params) return "";
+
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === "") continue;
+    searchParams.set(key, String(value));
+  }
+
+  const qs = searchParams.toString();
+  return qs ? `?${qs}` : "";
+};
+
+export const courtService = {
+  /**
+   * POST /api/courts
+   * Create a new court (ORGANIZER or ADMIN)
+   */
+  createCourt: async (
+    payload: CreateCourtPayload,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtListItem>> => {
+    return apiClient.post<ApiResponse<CourtListItem>>(
+      "courts",
+      payload,
+      options,
+    );
+  },
+
+  /**
+   * GET /api/courts
+   * Public list of courts
+   */
+  getAllCourts: async (
+    query?: CourtQueryParams,
+    options?: FetchOptions,
+  ): Promise<ListApiResponse<CourtListItem>> => {
+    const qs = buildQueryString(query);
+    return apiClient.get<ListApiResponse<CourtListItem>>(
+      `courts${qs}`,
+      options,
+    );
+  },
+
+  /**
+   * GET /api/courts/:slug
+   * Public single court details
+   */
+  getCourtBySlug: async (
+    slug: string,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtDetails>> => {
+    return apiClient.get<ApiResponse<CourtDetails>>(
+      `courts/${encodeURIComponent(slug)}`,
+      options,
+    );
+  },
+
+  /**
+   * GET /api/courts/organizer/my-courts
+   * Courts owned by logged-in organizer
+   */
+  getOrganizerCourts: async (
+    query?: CourtQueryParams,
+    options?: FetchOptions,
+  ): Promise<ListApiResponse<CourtListItem>> => {
+    const qs = buildQueryString(query);
+    return apiClient.get<ListApiResponse<CourtListItem>>(
+      `courts/organizer/my-courts${qs}`,
+      options,
+    );
+  },
+
+  /**
+   * PATCH /api/courts/:courtId
+   * Update court owned by organizer/admin
+   */
+  updateCourt: async (
+    courtId: string,
+    payload: UpdateCourtPayload,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtListItem>> => {
+    return apiClient.patch<ApiResponse<CourtListItem>>(
+      `courts/${encodeURIComponent(courtId)}`,
+      payload,
+      options,
+    );
+  },
+
+  /**
+   * DELETE /api/courts/:courtId
+   * Soft-delete a court (status => HIDDEN)
+   */
+  deleteCourt: async (
+    courtId: string,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtListItem>> => {
+    return apiClient.delete<ApiResponse<CourtListItem>>(
+      `courts/${encodeURIComponent(courtId)}`,
+      options,
+    );
+  },
+
+  /**
+   * GET /api/courts/:courtId/members
+   * Members/bookers of a specific court
+   */
+  getCourtMembers: async (
+    courtId: string,
+    query?: CourtMemberQueryParams,
+    options?: FetchOptions,
+  ): Promise<ListApiResponse<CourtMember>> => {
+    const qs = buildQueryString(query);
+    return apiClient.get<ListApiResponse<CourtMember>>(
+      `courts/${encodeURIComponent(courtId)}/members${qs}`,
+      options,
+    );
+  },
+
+  /**
+   * GET /api/admin/courts/pending
+   * Admin-only list of courts waiting for approval
+   */
+  getPendingCourtsForAdmin: async (
+    query?: CourtQueryParams,
+    options?: FetchOptions,
+  ): Promise<ListApiResponse<CourtListItem>> => {
+    const qs = buildQueryString(query);
+    return apiClient.get<ListApiResponse<CourtListItem>>(
+      `admin/courts/pending${qs}`,
+      options,
+    );
+  },
+
+  /**
+   * PATCH /api/admin/courts/:courtId/approve
+   * Admin approves a pending court and activates it
+   */
+  approveCourtByAdmin: async (
+    courtId: string,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtListItem>> => {
+    return apiClient.patch<ApiResponse<CourtListItem>>(
+      `admin/courts/${encodeURIComponent(courtId)}/approve`,
+      {},
+      options,
+    );
+  },
+};

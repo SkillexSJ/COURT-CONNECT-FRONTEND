@@ -1,5 +1,9 @@
 import { AppSidebar } from "@/components/features/dashboard/shared/AppSidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { requireUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 
@@ -27,6 +31,9 @@ export default async function DashboardLayout({
         user={{ name: user.name, email: user.email, avatar: user.image || "" }}
       />
       <SidebarInset>
+        <div className="flex items-center gap-2 border-b border-sidebar-border px-4 py-3 md:hidden">
+          <SidebarTrigger />
+        </div>
         <div className="flex flex-1 flex-col gap-6 p-4 pt-0 md:p-8 max-w-full">
           {children}
         </div>

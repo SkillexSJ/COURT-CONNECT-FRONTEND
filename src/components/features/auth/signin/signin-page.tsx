@@ -1,14 +1,14 @@
 "use client";
 
-import { SignUpForm } from "./signup-form";
+import { SignInForm } from "./signin-form";
 import { AuthSplitLayout } from "../shared/auth-split-layout";
 
-export function SignUpPage() {
+export function SignInPage() {
   return (
     <AuthSplitLayout>
-      <SignUpForm />
+      <SignInForm />
     </AuthSplitLayout>
   );
 }
 
-export default SignUpPage;
+export default SignInPage;

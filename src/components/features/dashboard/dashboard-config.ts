@@ -6,7 +6,6 @@ import {
   IconUserCircle,
   IconSearch,
   IconCategory,
-  IconClock,
   IconSettings,
 } from "@tabler/icons-react";
 
@@ -45,19 +44,28 @@ export const dashboardConfig = {
         icon: IconDashboard,
       },
       {
+        title: "Venues",
+        url: "/organizer/venues",
+        icon: IconCategory,
+        items: [
+          {
+            title: "All Venues",
+            url: "/organizer/venues",
+          },
+          {
+            title: "Add Venue",
+            url: "/organizer/venues/new",
+          },
+          {
+            title: "Schedules",
+            url: "/organizer/venues/schedules",
+          },
+        ],
+      },
+      {
         title: "Bookings",
         url: "/organizer/bookings",
         icon: IconCalendarEvent,
-      },
-      {
-        title: "Analytics",
-        url: "/organizer/analytics",
-        icon: IconChartBar,
-      },
-      {
-        title: "Venue Management",
-        url: "/organizer/venues",
-        icon: IconCategory,
       },
       {
         title: "Settings",
