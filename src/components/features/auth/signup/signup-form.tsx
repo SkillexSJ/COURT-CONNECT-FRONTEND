@@ -18,13 +18,161 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signUpSchema, type SignUpFormValues } from "@/lib/validations/auth";
 import { authService } from "@/service/auth.service";
+import { organizerService } from "@/service/organizer.service";
+
+type Role = "USER" | "ORGANIZER";
+
+function UserSignUpFields({
+  form,
+  isLoading,
+}: {
+  form: ReturnType<typeof useForm<SignUpFormValues>>;
+  isLoading: boolean;
+}) {
+  return (
+    <>
+      <div className="space-y-2">
+        <Label
+          htmlFor="name"
+          className="block text-xs font-bold tracking-widest uppercase text-foreground"
+        >
+          Full Name
+        </Label>
+        <Input
+          id="name"
+          placeholder="ALEXANDER STERLING"
+          {...form.register("name")}
+          className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
+            form.formState.errors.name ? "border-destructive" : "border-input"
+          }`}
+          disabled={isLoading}
+        />
+        {form.formState.errors.name?.message && (
+          <p className="text-xs text-error">
+            {form.formState.errors.name.message}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label
+          htmlFor="email"
+          className="block text-xs font-bold tracking-widest uppercase text-foreground"
+        >
+          Email Address
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="alex@elitearena.com"
+          {...form.register("email")}
+          className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
+            form.formState.errors.email ? "border-destructive" : "border-input"
+          }`}
+          disabled={isLoading}
+        />
+        {form.formState.errors.email?.message && (
+          <p className="text-xs text-error">
+            {form.formState.errors.email.message}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label
+          htmlFor="password"
+          className="block text-xs font-bold tracking-widest uppercase text-foreground"
+        >
+          Password
+        </Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="••••••••••••"
+          {...form.register("password")}
+          className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
+            form.formState.errors.password
+              ? "border-destructive"
+              : "border-input"
+          }`}
+          disabled={isLoading}
+        />
+        {form.formState.errors.password?.message && (
+          <p className="text-xs text-error">
+            {form.formState.errors.password.message}
+          </p>
+        )}
+      </div>
+    </>
+  );
+}
+
+function OrganizerExtraFields({
+  form,
+  isLoading,
+}: {
+  form: ReturnType<typeof useForm<SignUpFormValues>>;
+  isLoading: boolean;
+}) {
+  return (
+    <>
+      <div className="space-y-2">
+        <Label
+          htmlFor="businessName"
+          className="block text-xs font-bold tracking-widest uppercase text-foreground"
+        >
+          Business Name
+        </Label>
+        <Input
+          id="businessName"
+          placeholder="Your business name"
+          {...form.register("businessName")}
+          className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
+            form.formState.errors.businessName
+              ? "border-destructive"
+              : "border-input"
+          }`}
+          disabled={isLoading}
+        />
+        {form.formState.errors.businessName?.message && (
+          <p className="text-xs text-destructive">
+            {form.formState.errors.businessName.message}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label
+          htmlFor="phoneNumber"
+          className="block text-xs font-bold tracking-widest uppercase text-foreground"
+        >
+          Phone Number
+        </Label>
+        <Input
+          id="phoneNumber"
+          placeholder="+1 (555) 000-0000"
+          {...form.register("phoneNumber")}
+          className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
+            form.formState.errors.phoneNumber
+              ? "border-destructive"
+              : "border-input"
+          }`}
+          disabled={isLoading}
+        />
+        {form.formState.errors.phoneNumber?.message && (
+          <p className="text-xs text-destructive">
+            {form.formState.errors.phoneNumber.message}
+          </p>
+        )}
+      </div>
+    </>
+  );
+}
 
 export function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedRole, setSelectedRole] = React.useState<"USER" | "ORGANIZER">(
-    "USER",
-  );
+  const [selectedRole, setSelectedRole] = React.useState<Role>("USER");
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -40,7 +188,7 @@ export function SignUpForm() {
     },
   });
 
-  const handleRoleSelect = (role: "USER" | "ORGANIZER") => {
+  const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
     form.setValue("role", role, { shouldValidate: true });
   };
@@ -53,11 +201,25 @@ export function SignUpForm() {
         name: values.name,
         email: values.email,
         password: values.password,
-        role: values.role,
       });
 
+      if (values.role === "ORGANIZER") {
+        await organizerService.createProfile({
+          businessName: values.businessName?.trim() || "Organizer",
+          phoneNumber: values.phoneNumber?.trim() || undefined,
+        });
+
+        // Refresh auth session so role changes are reflected immediately.
+        await authService.signOut();
+        await authService.signIn({
+          email: values.email,
+          password: values.password,
+        });
+      }
+
       toast.success("Account created successfully!");
-      router.push("/");
+      router.push(values.role === "ORGANIZER" ? "/organizer" : "/");
+      router.refresh();
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -130,137 +292,10 @@ export function SignUpForm() {
         </div>
 
         <div className="space-y-5">
-          <div className="space-y-2">
-            <Label
-              htmlFor="name"
-              className="block text-xs font-bold tracking-widest uppercase text-foreground"
-            >
-              Full Name
-            </Label>
-            <Input
-              id="name"
-              placeholder="ALEXANDER STERLING"
-              {...form.register("name")}
-              className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
-                form.formState.errors.name
-                  ? "border-destructive"
-                  : "border-input"
-              }`}
-              disabled={isLoading}
-            />
-            {form.formState.errors.name?.message && (
-              <p className="text-xs text-error">
-                {form.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              htmlFor="email"
-              className="block text-xs font-bold tracking-widest uppercase text-foreground"
-            >
-              Email Address
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="alex@elitearena.com"
-              {...form.register("email")}
-              className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
-                form.formState.errors.email
-                  ? "border-destructive"
-                  : "border-input"
-              }`}
-              disabled={isLoading}
-            />
-            {form.formState.errors.email?.message && (
-              <p className="text-xs text-error">
-                {form.formState.errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              htmlFor="password"
-              className="block text-xs font-bold tracking-widest uppercase text-foreground"
-            >
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••••••"
-              {...form.register("password")}
-              className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
-                form.formState.errors.password
-                  ? "border-destructive"
-                  : "border-input"
-              }`}
-              disabled={isLoading}
-            />
-            {form.formState.errors.password?.message && (
-              <p className="text-xs text-error">
-                {form.formState.errors.password.message}
-              </p>
-            )}
-          </div>
+          <UserSignUpFields form={form} isLoading={isLoading} />
 
           {selectedRole === "ORGANIZER" && (
-            <>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="businessName"
-                  className="block text-xs font-bold tracking-widest uppercase text-foreground"
-                >
-                  Business Name
-                </Label>
-                <Input
-                  id="businessName"
-                  placeholder="Your business name"
-                  {...form.register("businessName")}
-                  className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
-                    form.formState.errors.businessName
-                      ? "border-destructive"
-                      : "border-input"
-                  }`}
-                  disabled={isLoading}
-                />
-                {form.formState.errors.businessName?.message &&
-                  selectedRole === "ORGANIZER" && (
-                    <p className="text-xs text-destructive">
-                      {form.formState.errors.businessName.message}
-                    </p>
-                  )}
-              </div>
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="phoneNumber"
-                  className="block text-xs font-bold tracking-widest uppercase text-foreground"
-                >
-                  Phone Number
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  placeholder="+1 (555) 000-0000"
-                  {...form.register("phoneNumber")}
-                  className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
-                    form.formState.errors.phoneNumber
-                      ? "border-destructive"
-                      : "border-input"
-                  }`}
-                  disabled={isLoading}
-                />
-                {form.formState.errors.phoneNumber?.message &&
-                  selectedRole === "ORGANIZER" && (
-                    <p className="text-xs text-destructive">
-                      {form.formState.errors.phoneNumber.message}
-                    </p>
-                  )}
-              </div>
-            </>
+            <OrganizerExtraFields form={form} isLoading={isLoading} />
           )}
         </div>
 

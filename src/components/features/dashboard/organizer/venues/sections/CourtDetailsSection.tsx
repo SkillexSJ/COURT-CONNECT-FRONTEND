@@ -1,0 +1,124 @@
+import type { UseFormReturn } from "react-hook-form";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { IconMapPin } from "@tabler/icons-react";
+
+import type { VenueFormValues } from "../venue-form.schema";
+
+type Props = {
+  form: UseFormReturn<VenueFormValues>;
+};
+
+export function CourtDetailsSection({ form }: Props) {
+  return (
+    <Card className="rounded-sm border-border bg-card">
+      <CardHeader>
+        <CardTitle className="font-heading text-xl font-black uppercase tracking-tight text-primary">
+          I. Court Details
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Court Name
+            </Label>
+            <Input
+              {...form.register("name")}
+              placeholder="e.g., Center Court Elite"
+            />
+            {form.formState.errors.name && (
+              <p className="text-xs text-destructive">
+                {form.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Facility Type
+            </Label>
+            <select
+              {...form.register("type")}
+              className="h-10 w-full border border-input bg-background px-3 text-sm"
+            >
+              <option>Indoor Tennis</option>
+              <option>Clay Court</option>
+              <option>Padel Court</option>
+              <option>Football Turf</option>
+              <option>Badminton Court</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+            Location Identity
+          </Label>
+          <div className="relative">
+            <IconMapPin className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              {...form.register("locationLabel")}
+              className="pl-9"
+              placeholder="e.g., Greenwich, London"
+            />
+          </div>
+          {form.formState.errors.locationLabel && (
+            <p className="text-xs text-destructive">
+              {form.formState.errors.locationLabel.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+            Court Narrative (Description)
+          </Label>
+          <textarea
+            {...form.register("description")}
+            rows={4}
+            className="w-full border border-input bg-background p-3 text-sm"
+            placeholder="Describe surface, lighting, and exclusive amenities..."
+          />
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+            <span>Recommended: 150-300 characters</span>
+            <span>{form.watch("description")?.length || 0} / 1000</span>
+          </div>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Base Price (Per Slot)
+            </Label>
+            <Input
+              type="number"
+              step="0.01"
+              {...form.register("basePrice", { valueAsNumber: true })}
+              placeholder="0.00"
+            />
+            {form.formState.errors.basePrice && (
+              <p className="text-xs text-destructive">
+                {form.formState.errors.basePrice.message}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Latitude
+            </Label>
+            <Input {...form.register("latitude")} placeholder="Optional" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Longitude
+            </Label>
+            <Input {...form.register("longitude")} placeholder="Optional" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

@@ -10,15 +10,12 @@ export const authService = {
     email: string;
     password: string;
     name: string;
-    role?: string;
     image?: string;
   }) => {
     const res = await authClient.signUp.email({
       email: data.email,
       password: data.password,
       name: data.name,
-      // @ts-expect-error - role is optional in the form but required by the API, default to "user"
-      role: data.role,
       image: data.image,
       callbackURL: `${env.APP_URL}/dashboard`,
     });

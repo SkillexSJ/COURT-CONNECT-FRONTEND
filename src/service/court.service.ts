@@ -15,6 +15,7 @@ export type CreateCourtPayload = {
   basePrice: number;
   latitude?: number;
   longitude?: number;
+  amenityIds?: string[];
 };
 
 export type UpdateCourtPayload = Partial<
@@ -32,6 +33,7 @@ export type CourtQueryParams = {
   status?: CourtStatus;
   type?: string;
   basePrice?: number;
+  amenityIds?: string[];
 };
 
 export type CourtMemberQueryParams = {
@@ -80,6 +82,14 @@ export type CourtAmenity = {
   id: string;
   name: string;
   icon: string | null;
+  _count?: {
+    courts: number;
+  };
+};
+
+export type AmenityPayload = {
+  name: string;
+  icon?: string | null;
 };
 
 export type CourtSlotTemplate = {
@@ -134,8 +144,16 @@ export type CourtMember = {
   };
 };
 
+export type UploadCourtMediaPayload = {
+  primaryImage?: File | null;
+  galleryImages?: File[];
+};
+
 const buildQueryString = (
-  params?: Record<string, string | number | boolean | undefined | null>,
+  params?: Record<
+    string,
+    string | number | boolean | string[] | number[] | undefined | null
+  >,
 ) => {
   if (!params) return "";
 
@@ -143,6 +161,13 @@ const buildQueryString = (
 
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null || value === "") continue;
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) continue;
+      searchParams.set(key, value.join(","));
+      continue;
+    }
+
     searchParams.set(key, String(value));
   }
 
@@ -196,6 +221,19 @@ export const courtService = {
   },
 
   /**
+   * GET /api/courts/amenities
+   * Public amenities list for organizer court form.
+   */
+  getAmenities: async (
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtAmenity[]>> => {
+    return apiClient.get<ApiResponse<CourtAmenity[]>>(
+      "courts/amenities",
+      options,
+    );
+  },
+
+  /**
    * GET /api/courts/organizer/my-courts
    * Courts owned by logged-in organizer
    */
@@ -224,6 +262,48 @@ export const courtService = {
       payload,
       options,
     );
+  },
+
+  /**
+   * POST /api/courts/:courtId/media
+   * Upload primary/gallery images to Cloudinary and persist media rows.
+   */
+  uploadCourtMedia: async (
+    courtId: string,
+    payload: UploadCourtMediaPayload,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtMediaItem[]>> => {
+    const formData = new FormData();
+
+    if (payload.primaryImage) {
+      formData.append("images", payload.primaryImage);
+      formData.append("primaryIndex", "0");
+    }
+
+    for (const file of payload.galleryImages ?? []) {
+      formData.append("images", file);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90_000);
+
+    try {
+      return await apiClient.post<ApiResponse<CourtMediaItem[]>>(
+        `courts/${encodeURIComponent(courtId)}/media`,
+        formData,
+        {
+          ...options,
+          signal: controller.signal,
+        },
+      );
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("Image upload timed out. Please try smaller images.");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   },
 
   /**
@@ -282,6 +362,64 @@ export const courtService = {
     return apiClient.patch<ApiResponse<CourtListItem>>(
       `admin/courts/${encodeURIComponent(courtId)}/approve`,
       {},
+      options,
+    );
+  },
+
+  /**
+   * GET /api/admin/amenities
+   * Admin-only amenities management list.
+   */
+  getAmenitiesForAdmin: async (
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtAmenity[]>> => {
+    return apiClient.get<ApiResponse<CourtAmenity[]>>(
+      "admin/amenities",
+      options,
+    );
+  },
+
+  /**
+   * POST /api/admin/amenities
+   * Admin creates amenity.
+   */
+  createAmenityByAdmin: async (
+    payload: AmenityPayload,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtAmenity>> => {
+    return apiClient.post<ApiResponse<CourtAmenity>>(
+      "admin/amenities",
+      payload,
+      options,
+    );
+  },
+
+  /**
+   * PATCH /api/admin/amenities/:amenityId
+   * Admin updates amenity.
+   */
+  updateAmenityByAdmin: async (
+    amenityId: string,
+    payload: Partial<AmenityPayload>,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtAmenity>> => {
+    return apiClient.patch<ApiResponse<CourtAmenity>>(
+      `admin/amenities/${encodeURIComponent(amenityId)}`,
+      payload,
+      options,
+    );
+  },
+
+  /**
+   * DELETE /api/admin/amenities/:amenityId
+   * Admin deletes amenity.
+   */
+  deleteAmenityByAdmin: async (
+    amenityId: string,
+    options?: FetchOptions,
+  ): Promise<ApiResponse<CourtAmenity>> => {
+    return apiClient.delete<ApiResponse<CourtAmenity>>(
+      `admin/amenities/${encodeURIComponent(amenityId)}`,
       options,
     );
   },
