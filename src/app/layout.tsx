@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Lexend, Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -41,8 +42,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={htmlClassName} suppressHydrationWarning>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <Toaster position="top-right" />
-        {children}
+        <QueryProvider>
+          <Toaster position="top-right" />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

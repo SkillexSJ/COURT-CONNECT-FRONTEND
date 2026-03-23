@@ -1,7 +1,5 @@
-import React from "react";
+import VenuePortfolioPage from "@/components/features/dashboard/venues/VenuePortfolioPage";
 
-const VenuePage = () => {
-  return <div>VenuePage</div>;
-};
-
-export default VenuePage;
+export default function OrganizerVenuesPage() {
+  return <VenuePortfolioPage role="ORGANIZER" />;
+}
