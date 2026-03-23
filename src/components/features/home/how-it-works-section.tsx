@@ -7,15 +7,17 @@ const icons = [Compass, CheckCircle2, Trophy];
 export function HowItWorksSection() {
   return (
     <section className="bg-surface px-6 py-28 md:px-12">
-      <div className="mx-auto grid max-w-[1920px] grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-24">
+      <div className="mx-auto grid max-w-480 grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-24">
         <div className="lg:col-span-5">
           <p className="mb-6 inline-block bg-surface-container-low px-4 py-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary">
             The Process
           </p>
-          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight text-primary md:text-7xl">
+          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight text-primary md:text-7xl lg:text-8xl">
             Elite Access,
             <br />
-            Streamlined.
+            <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">
+              Streamlined.
+            </span>
           </h2>
           <p className="mt-8 max-w-lg text-lg text-on-surface-variant">
             We removed the barriers between you and the field. Professional

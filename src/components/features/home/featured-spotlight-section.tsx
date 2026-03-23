@@ -12,10 +12,12 @@ export function FeaturedSpotlightSection() {
           <p className="mb-8 inline-block bg-secondary px-4 py-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary">
             Venue of the Month
           </p>
-          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight md:text-7xl">
-            The <span className="text-secondary">Titanium</span>
+          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight md:text-7xl lg:text-8xl">
+            The Titanium
             <br />
-            Monolith
+            <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">
+              Monolith
+            </span>
           </h2>
           <p className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/70">
             <MapPin className="h-4 w-4" /> Los Angeles District, CA

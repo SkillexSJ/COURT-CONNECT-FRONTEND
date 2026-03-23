@@ -9,10 +9,12 @@ export function GlobalPresenceSection() {
     <section className="bg-primary px-6 py-28 md:px-12">
       <div className="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
         <div>
-          <h2 className="font-display text-5xl font-black uppercase leading-none tracking-tight text-surface md:text-7xl">
+          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight text-surface md:text-7xl lg:text-8xl">
             Global
             <br />
-            <span className="text-secondary">Presence.</span>
+            <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">
+              Presence.
+            </span>
           </h2>
           <p className="mt-6 max-w-lg text-lg text-surface/70">
             From concrete courts in New York to elite fields in London. We are

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { CourtAmenity } from "@/service/court.service";
+import { CourtAmenity } from "@/types/court.types";
+
 import {
   Accessibility,
   Car,

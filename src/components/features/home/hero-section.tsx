@@ -1,6 +1,60 @@
 /* eslint-disable @next/next/no-img-element */
 
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CalendarDays, MapPin, Search, Swords } from "lucide-react";
+
+const SPORT_SUGGESTIONS = [
+  "Football",
+  "Tennis",
+  "Basketball",
+  "Badminton",
+  "Padel",
+  "Futsal",
+];
+
 export function HeroSection() {
+  const router = useRouter();
+
+  const [mobileQuery, setMobileQuery] = useState("");
+  const [sport, setSport] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+
+  const today = useMemo(() => new Date().toISOString().split("T")[0], []);
+
+  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const mobileValue = mobileQuery.trim();
+    const sportValue = sport.trim();
+    const locationValue = location.trim() || mobileValue;
+    const exactMatchedSport = SPORT_SUGGESTIONS.find(
+      (item) => item.toLowerCase() === mobileValue.toLowerCase(),
+    );
+
+    const params = new URLSearchParams();
+
+    if (locationValue) {
+      params.set("searchTerm", locationValue);
+    }
+
+    if (sportValue) {
+      params.set("type", sportValue);
+    } else if (exactMatchedSport) {
+      params.set("type", exactMatchedSport);
+    }
+
+    if (date) {
+      params.set("date", date);
+    }
+
+    const query = params.toString();
+    router.push(query ? `/venues?${query}` : "/venues");
+  };
+
   return (
     <section className="relative flex min-h-[90vh] items-center overflow-hidden pt-20">
       <div className="absolute inset-0">
@@ -21,40 +75,113 @@ export function HeroSection() {
           </h1>
         </div>
 
-        <div className="mt-12 grid max-w-5xl grid-cols-1 gap-0 bg-surface p-1 md:grid-cols-[1fr_auto]">
-          <div className="grid grid-cols-1 md:grid-cols-3">
-            <div className="p-6">
+        <form
+          onSubmit={submitSearch}
+          className="mt-12 max-w-6xl border border-primary/10 bg-surface/95 p-3 backdrop-blur-sm"
+        >
+          <div className="flex gap-2 md:hidden">
+            <label className="flex grow items-center gap-3 rounded-sm border border-primary/10 bg-white/85 px-4 py-4 transition-colors focus-within:border-primary/40">
+              <Search className="h-4 w-4 text-primary/70" />
+              <input
+                value={mobileQuery}
+                onChange={(event) => setMobileQuery(event.target.value)}
+                className="w-full border-0 bg-transparent p-0 font-display text-base font-bold text-primary outline-none"
+                placeholder="Search by sport or city"
+              />
+            </label>
+            <button
+              type="submit"
+              className="flex min-h-16 items-center justify-center bg-primary px-5 font-display text-xs font-black uppercase tracking-widest text-secondary transition hover:brightness-110"
+            >
+              Go
+            </button>
+          </div>
+
+          <div className="hidden gap-2 md:grid lg:grid-cols-[1fr_1fr_1fr_auto]">
+            <label className="rounded-sm border border-primary/10 bg-white/80 p-4 transition-colors focus-within:border-primary/40">
               <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
                 What sport?
               </p>
-              <input
-                className="w-full border-0 bg-transparent p-0 font-display text-lg font-bold"
-                placeholder="Football, Tennis..."
-              />
-            </div>
-            <div className="p-6">
+              <div className="flex items-center gap-3">
+                <Swords className="h-4 w-4 text-primary/70" />
+                <input
+                  value={sport}
+                  onChange={(event) => setSport(event.target.value)}
+                  list="hero-sport-suggestions"
+                  className="w-full border-0 bg-transparent p-0 font-display text-base font-bold text-primary outline-none md:text-lg"
+                  placeholder="Football, Tennis..."
+                />
+              </div>
+            </label>
+
+            <label className="rounded-sm border border-primary/10 bg-white/80 p-4 transition-colors focus-within:border-primary/40">
               <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
                 Where?
               </p>
-              <input
-                className="w-full border-0 bg-transparent p-0 font-display text-lg font-bold"
-                placeholder="Enter city"
-              />
-            </div>
-            <div className="p-6">
+              <div className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 text-primary/70" />
+                <input
+                  value={location}
+                  onChange={(event) => setLocation(event.target.value)}
+                  className="w-full border-0 bg-transparent p-0 font-display text-base font-bold text-primary outline-none md:text-lg"
+                  placeholder="Enter city or area"
+                />
+              </div>
+            </label>
+
+            <label className="rounded-sm border border-primary/10 bg-white/80 p-4 transition-colors focus-within:border-primary/40">
               <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
                 Date
               </p>
-              <input
-                className="w-full border-0 bg-transparent p-0 font-display text-lg font-bold"
-                placeholder="Select date"
-              />
-            </div>
+              <div className="flex items-center gap-3">
+                <CalendarDays className="h-4 w-4 text-primary/70" />
+                <input
+                  type="date"
+                  min={today}
+                  value={date}
+                  onChange={(event) => setDate(event.target.value)}
+                  className="w-full border-0 bg-transparent p-0 font-display text-base font-bold text-primary outline-none md:text-lg"
+                />
+              </div>
+            </label>
+
+            <button
+              type="submit"
+              className="flex min-h-16 items-center justify-center gap-2 bg-primary px-8 py-4 font-display text-sm font-black uppercase tracking-widest text-secondary transition hover:brightness-110"
+            >
+              <Search className="h-4 w-4" />
+              Search
+            </button>
           </div>
-          <button className="bg-primary px-10 py-6 font-display text-sm font-black uppercase tracking-widest text-secondary transition hover:brightness-110">
-            Search
-          </button>
-        </div>
+
+          <datalist id="hero-sport-suggestions">
+            {SPORT_SUGGESTIONS.map((item) => (
+              <option key={item} value={item} />
+            ))}
+          </datalist>
+
+          <div className="mt-3 hidden flex-wrap items-center gap-2 px-1 md:flex">
+            {SPORT_SUGGESTIONS.map((item) => {
+              const isActive =
+                sport.trim().toLowerCase() === item.toLowerCase();
+
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setSport(item)}
+                  className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors ${
+                    isActive
+                      ? "border-primary bg-primary text-secondary"
+                      : "border-primary/20 bg-white/70 text-primary hover:border-primary/40"
+                  }`}
+                >
+                  {item}
+                </button>
+              );
+            })}
+          </div>
+        </form>
       </div>
     </section>
   );
