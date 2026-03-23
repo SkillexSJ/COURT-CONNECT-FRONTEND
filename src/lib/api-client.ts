@@ -5,7 +5,7 @@ export type FetchOptions = Omit<RequestInit, "headers"> & {
   headers?: Record<string, string>;
 };
 
-class ApiError extends Error {
+export class ApiError extends Error {
   public status: number;
   public data: unknown;
 
