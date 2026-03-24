@@ -1,54 +1,141 @@
-/* eslint-disable @next/next/no-img-element */
+"use client";
 
+import { useMemo } from "react";
 import { MapPin } from "lucide-react";
+import Image from "next/image";
+import { useHomeLandingCourtsQuery } from "@/hooks/queries/use-courts-query";
+import { VENUE_FALLBACK_IMAGE } from "@/lib/placeholders";
+import type { CourtListItem } from "@/types/court.types";
+
+type SpotlightVenue = {
+  titleMain: string;
+  titleAccent: string;
+  location: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  price: number;
+  detailHref: string;
+};
+
+const staticFallbackVenue: SpotlightVenue = {
+  titleMain: "The Titanium",
+  titleAccent: "Monolith",
+  location: "Los Angeles District, CA",
+  description:
+    "Designed by world-renowned architects, the Monolith represents the pinnacle of urban sports infrastructure. Featuring hybrid turf technology and elite broadcast capabilities.",
+  image: "/image2.png",
+  imageAlt: "Premium arena architecture",
+  price: 450,
+  detailHref: "/venues",
+};
+
+const toPriceNumber = (value: string | number) => {
+  if (typeof value === "number") return value;
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const mapCourtToSpotlightVenue = (court: CourtListItem): SpotlightVenue => {
+  const venueNameParts = court.name.trim().split(/\s+/).filter(Boolean);
+  const hasAccentSplit = venueNameParts.length > 1;
+
+  const titleMain = hasAccentSplit
+    ? venueNameParts.slice(0, -1).join(" ")
+    : court.name;
+  const titleAccent = hasAccentSplit
+    ? venueNameParts[venueNameParts.length - 1]
+    : "Spotlight";
+
+  const image =
+    court.media?.find((item) => item.isPrimary)?.url ??
+    court.media?.[0]?.url ??
+    VENUE_FALLBACK_IMAGE;
+
+  return {
+    titleMain,
+    titleAccent,
+    location: court.locationLabel,
+    description:
+      "This venue is currently leading booking demand across the platform. Explore the court profile and secure your slot before prime hours are gone.",
+    image,
+    imageAlt: `${court.name} venue image`,
+    price: toPriceNumber(court.basePrice),
+    detailHref: `/venues/${court.slug}`,
+  };
+};
 
 export function FeaturedSpotlightSection() {
-  return (
-    <section className="relative overflow-hidden bg-primary px-6 py-28 text-surface md:px-12 md:py-40">
-      <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_right,rgba(193,241,0,0.2),transparent_60%)]" />
+  const courtsQuery = useHomeLandingCourtsQuery();
 
-      <div className="relative z-10 mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
-        <div>
-          <p className="mb-8 inline-block bg-secondary px-4 py-1 font-display text-[10px] font-bold uppercase tracking-widest text-primary">
-            Venue of the Month
+  const spotlightVenue = useMemo<SpotlightVenue>(() => {
+    const courts = courtsQuery.data?.data ?? [];
+    const topBookedCourt = [...courts]
+      .filter((court) => (court._count?.bookings ?? 0) > 0)
+      .sort((a, b) => (b._count?.bookings ?? 0) - (a._count?.bookings ?? 0))[0];
+
+    return topBookedCourt
+      ? mapCourtToSpotlightVenue(topBookedCourt)
+      : staticFallbackVenue;
+  }, [courtsQuery.data?.data]);
+
+  return (
+    <section className="relative overflow-hidden bg-primary px-5 py-18 text-primary-foreground sm:px-6 md:px-10 md:py-24 lg:px-12 lg:py-28">
+      {/* <div className="pointer-events-none absolute inset-y-0 right-0 w-[55%] bg-black/12" />
+      <div className="pointer-events-none absolute left-0 top-0 h-full w-1/2 bg-black/10" /> */}
+
+      <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl grid-cols-1 items-center gap-14 lg:grid-cols-[1.06fr_0.94fr] lg:gap-18">
+        <div className="max-w-2xl">
+          <p className="mb-7 inline-flex bg-secondary px-3 py-1 font-display text-[10px] font-black uppercase tracking-[0.16em] text-secondary-foreground">
+            Featured Venue
           </p>
-          <h2 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight md:text-7xl lg:text-8xl">
-            The Titanium
+
+          <h2 className="font-display text-5xl font-black uppercase leading-[0.86] tracking-tight text-primary-foreground sm:text-6xl lg:text-7xl xl:text-8xl">
+            {spotlightVenue.titleMain}
             <br />
-            <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">
-              Monolith
-            </span>
+            <span className="text-secondary">{spotlightVenue.titleAccent}</span>
           </h2>
-          <p className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/70">
-            <MapPin className="h-4 w-4" /> Los Angeles District, CA
+
+          <p className="mt-7 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-primary-foreground/65">
+            <MapPin className="h-4 w-4" /> {spotlightVenue.location}
           </p>
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-surface/80">
-            Designed for elite-level performance with hybrid turf technology and
-            broadcast-grade lighting.
+
+          <p className="mt-7 max-w-xl text-lg leading-relaxed text-primary-foreground/82">
+            {spotlightVenue.description}
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <button className="btn-primary px-8 py-4 text-xs font-black uppercase tracking-widest">
+
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <a
+              href={spotlightVenue.detailHref}
+              className="bg-secondary px-8 py-4 text-center font-display text-xs font-black uppercase tracking-[0.16em] text-secondary-foreground transition hover:opacity-90 sm:px-10"
+            >
               Book This Space
-            </button>
-            <button className="border border-surface/30 px-8 py-4 font-display text-xs font-black uppercase tracking-widest text-surface transition hover:bg-surface hover:text-primary">
+            </a>
+            <a
+              href={spotlightVenue.detailHref}
+              className="border border-primary-foreground/30 bg-transparent px-8 py-4 text-center font-display text-xs font-black uppercase tracking-[0.16em] text-primary-foreground transition hover:bg-primary-foreground hover:text-primary sm:px-10"
+            >
               Explore Tour
-            </button>
+            </a>
           </div>
         </div>
 
-        <div className="relative">
-          <div className="aspect-4/5 overflow-hidden bg-surface-container">
-            <img
-              src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1000&q=80"
-              alt="Featured venue"
+        <div className="relative mx-auto w-full max-w-150 lg:mx-0">
+          <div className="relative aspect-4/5 overflow-hidden border border-primary-foreground/10 bg-black/35 lg:rounded-sm">
+            <Image
+              src={spotlightVenue.image}
+              alt={spotlightVenue.imageAlt}
               className="h-full w-full object-cover"
+              fill
             />
+            <div className="absolute inset-0 bg-primary/35" />
           </div>
-          <div className="absolute -bottom-8 -left-8 hidden bg-secondary p-6 md:block">
-            <p className="font-display text-4xl font-black text-primary">
-              $450
+
+          <div className="absolute -bottom-7 left-4 border border-secondary/50 bg-secondary px-5 py-4 shadow-lg sm:left-6 sm:px-6 sm:py-5 md:left-8">
+            <p className="font-display text-4xl font-black leading-none text-secondary-foreground sm:text-5xl">
+              ${spotlightVenue.price}
             </p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-secondary-foreground/90">
               Premium Session Rate
             </p>
           </div>

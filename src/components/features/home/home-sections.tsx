@@ -10,15 +10,32 @@ import { TrendingVenuesSection } from "./trending-venues-section";
 
 export function HomeSections() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <HeroSection />
-      <AnnouncementSection />
-      <HowItWorksSection />
-      <FeaturedSpotlightSection />
-      <TestimonialsSection />
-      <TrendingVenuesSection />
-      <GlobalPresenceSection />
-      <OrganizerCtaSection />
+    <main className="min-h-screen overflow-x-clip bg-background text-foreground">
+      <div className="space-y-0">
+        <HeroSection />
+        <AnnouncementSection />
+      </div>
+
+      <div className="pt-10 md:pt-14 lg:pt-18">
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <HowItWorksSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <FeaturedSpotlightSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <TestimonialsSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <TrendingVenuesSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <GlobalPresenceSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <OrganizerCtaSection />
+        </div>
+      </div>
     </main>
   );
 }

@@ -4,7 +4,7 @@
 import { useMemo } from "react";
 import { ArrowUpRight, MapPin, ShieldCheck } from "lucide-react";
 
-import { useCourtsQuery } from "@/hooks/queries/use-courts-query";
+import { useHomeLandingCourtsQuery } from "@/hooks/queries/use-courts-query";
 import type { CourtListItem } from "@/types/court.types";
 
 import { trendingVenues } from "./data";
@@ -71,11 +71,7 @@ const mapCourtToTrendingCard = (
 };
 
 export function TrendingVenuesSection() {
-  const courtsQuery = useCourtsQuery({
-    status: "ACTIVE",
-    limit: 24,
-    sortBy: "-createdAt",
-  });
+  const courtsQuery = useHomeLandingCourtsQuery();
 
   const venues = useMemo<TrendingVenueCard[]>(() => {
     const now = new Date();
