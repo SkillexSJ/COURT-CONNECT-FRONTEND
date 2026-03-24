@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  allowedDevOrigins: [
+    "192.168.9.142"
+  ],
   reactCompiler: true,
   async rewrites() {
     return [
