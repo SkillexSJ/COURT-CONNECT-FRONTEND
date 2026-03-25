@@ -1,39 +1,12 @@
 import { apiClient, type FetchOptions } from "@/lib/api-client";
 import type { ApiResponse } from "@/types/response";
-
-export type CreateSlotTemplatePayload = {
-  dayOfWeek: number;
-  startMinute: number;
-  endMinute: number;
-  priceOverride?: number;
-};
-
-export type UpdateSlotTemplatePayload = Partial<{
-  startMinute: number;
-  endMinute: number;
-  priceOverride: number | null;
-  isActive: boolean;
-}>;
-
-export type SlotTemplate = {
-  id: string;
-  courtId: string;
-  dayOfWeek: number;
-  startMinute: number;
-  endMinute: number;
-  priceOverride: string | number | null;
-  isActive: boolean;
-};
-
-export type SlotTemplatesByDay = Record<string, SlotTemplate[]>;
-
-export type AvailableSlot = {
-  slotTemplateId: string;
-  dayOfWeek: number;
-  startMinute: number;
-  endMinute: number;
-  price: string | number | null;
-};
+import type {
+  AvailableSlot,
+  CreateSlotTemplatePayload,
+  SlotTemplate,
+  SlotTemplatesByDay,
+  UpdateSlotTemplatePayload,
+} from "@/types/schedule.types";
 
 const encodeDateParam = (date: string | Date) => {
   if (date instanceof Date) {
@@ -43,10 +16,6 @@ const encodeDateParam = (date: string | Date) => {
 };
 
 export const scheduleService = {
-  /**
-   * POST /api/courts/:courtId/schedules
-   * Create slot template for a specific court.
-   */
   createSlotTemplate: async (
     courtId: string,
     payload: CreateSlotTemplatePayload,
@@ -60,8 +29,8 @@ export const scheduleService = {
   },
 
   /**
-   * GET /api/courts/:courtId/schedules
-   * Public grouped slot templates by day.
+   * GET
+   *
    */
   getSlotTemplates: async (
     courtId: string,

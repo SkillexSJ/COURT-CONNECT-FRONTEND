@@ -1,4 +1,5 @@
 import { apiClient, type FetchOptions } from "@/lib/api-client";
+import { buildQueryString } from "@/lib/query/build-query-string";
 import {
   AmenityPayload,
   CourtAmenity,
@@ -13,32 +14,6 @@ import {
   UploadCourtMediaPayload,
 } from "@/types/court.types";
 import type { ApiResponse, ListApiResponse } from "@/types/response";
-
-const buildQueryString = (
-  params?: Record<
-    string,
-    string | number | boolean | string[] | number[] | undefined | null
-  >,
-) => {
-  if (!params) return "";
-
-  const searchParams = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null || value === "") continue;
-
-    if (Array.isArray(value)) {
-      if (value.length === 0) continue;
-      searchParams.set(key, value.join(","));
-      continue;
-    }
-
-    searchParams.set(key, String(value));
-  }
-
-  const qs = searchParams.toString();
-  return qs ? `?${qs}` : "";
-};
 
 export const courtService = {
   /**
