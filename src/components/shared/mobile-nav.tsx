@@ -140,7 +140,7 @@ export function MobileNav({
                   buttonVariants({ variant: "ghost" }),
                   "h-11 w-full justify-start rounded-lg text-sm text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   pathname === link.href
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground"
+                    ? "bg-secondary text-primary hover:bg-secondary/90 hover:text-primary"
                     : "",
                 )}
               >
@@ -149,7 +149,7 @@ export function MobileNav({
             ))}
           </div>
 
-          <Separator className="bg-sidebar-border border-1" />
+          <Separator className="border bg-sidebar-border" />
 
           {resolvedPending ? (
             <div className="flex flex-col gap-3">

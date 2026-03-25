@@ -6,7 +6,9 @@ import Image from "next/image";
 import { useHomeLandingCourtsQuery } from "@/hooks/queries/use-courts-query";
 import { VENUE_FALLBACK_IMAGE } from "@/lib/placeholders";
 import type { CourtListItem } from "@/types/court.types";
+import Link from "next/link";
 
+// TYPES
 type SpotlightVenue = {
   titleMain: string;
   titleAccent: string;
@@ -18,6 +20,7 @@ type SpotlightVenue = {
   detailHref: string;
 };
 
+// FALLBACK
 const staticFallbackVenue: SpotlightVenue = {
   titleMain: "The Titanium",
   titleAccent: "Monolith",
@@ -30,6 +33,7 @@ const staticFallbackVenue: SpotlightVenue = {
   detailHref: "/venues",
 };
 
+// HELPER
 const toPriceNumber = (value: string | number) => {
   if (typeof value === "number") return value;
   const parsed = Number.parseFloat(value);
@@ -66,6 +70,7 @@ const mapCourtToSpotlightVenue = (court: CourtListItem): SpotlightVenue => {
 };
 
 export function FeaturedSpotlightSection() {
+  // QUERY
   const courtsQuery = useHomeLandingCourtsQuery();
 
   const spotlightVenue = useMemo<SpotlightVenue>(() => {
@@ -80,7 +85,7 @@ export function FeaturedSpotlightSection() {
   }, [courtsQuery.data?.data]);
 
   return (
-    <section className="relative overflow-hidden bg-primary px-5 py-18 text-primary-foreground sm:px-6 md:px-10 md:py-24 lg:px-12 lg:py-28">
+    <section className="relative  overflow-hidden bg-primary px-5 py-18 text-primary-foreground sm:px-6 md:px-10 md:py-24 lg:px-12 lg:py-28">
       {/* <div className="pointer-events-none absolute inset-y-0 right-0 w-[55%] bg-black/12" />
       <div className="pointer-events-none absolute left-0 top-0 h-full w-1/2 bg-black/10" /> */}
 
@@ -105,23 +110,23 @@ export function FeaturedSpotlightSection() {
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <a
+            <Link
               href={spotlightVenue.detailHref}
-              className="bg-secondary px-8 py-4 text-center font-display text-xs font-black uppercase tracking-[0.16em] text-secondary-foreground transition hover:opacity-90 sm:px-10"
+              className="bg-secondary max-w-1/2  px-8 py-4 text-center font-display text-xs font-black uppercase tracking-[0.16em] text-secondary-foreground transition hover:opacity-90 sm:px-10"
             >
               Book This Space
-            </a>
-            <a
+            </Link>
+            {/* <a
               href={spotlightVenue.detailHref}
               className="border border-primary-foreground/30 bg-transparent px-8 py-4 text-center font-display text-xs font-black uppercase tracking-[0.16em] text-primary-foreground transition hover:bg-primary-foreground hover:text-primary sm:px-10"
             >
               Explore Tour
-            </a>
+            </a> */}
           </div>
         </div>
 
         <div className="relative mx-auto w-full max-w-150 lg:mx-0">
-          <div className="relative aspect-4/5 overflow-hidden border border-primary-foreground/10 bg-black/35 lg:rounded-sm">
+          <div className="relative aspect-square overflow-hidden border border-primary-foreground/10 bg-black/35 lg:rounded-sm">
             <Image
               src={spotlightVenue.image}
               alt={spotlightVenue.imageAlt}
@@ -136,7 +141,7 @@ export function FeaturedSpotlightSection() {
               ${spotlightVenue.price}
             </p>
             <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-secondary-foreground/90">
-              Premium Session Rate
+              Hourly Rate Session
             </p>
           </div>
         </div>

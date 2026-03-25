@@ -8,6 +8,7 @@ import { useHomeLandingCourtsQuery } from "@/hooks/queries/use-courts-query";
 import type { CourtListItem } from "@/types/court.types";
 
 import { trendingVenues } from "./data";
+import Link from "next/link";
 
 type TrendingVenueCard = {
   id: string;
@@ -71,6 +72,7 @@ const mapCourtToTrendingCard = (
 };
 
 export function TrendingVenuesSection() {
+  // QUERIES
   const courtsQuery = useHomeLandingCourtsQuery();
 
   const venues = useMemo<TrendingVenueCard[]>(() => {
@@ -98,7 +100,7 @@ export function TrendingVenuesSection() {
   }, [courtsQuery.data?.data]);
 
   return (
-    <section className="relative overflow-hidden bg-surface px-6 py-28 md:px-12">
+    <section className="relative overflow-hidden min-h-screen bg-surface px-6 py-28 md:px-12">
       <div className="mx-auto max-w-screen-2xl">
         <div className="mb-14 flex items-end justify-between gap-6">
           <div>
@@ -113,12 +115,12 @@ export function TrendingVenuesSection() {
               Ranked by recent bookings and freshness
             </p>
           </div>
-          <a
+          <Link
             href="/venues"
-            className="hidden items-center gap-2 border border-primary/20 bg-primary px-5 py-3 font-display text-xs font-black uppercase tracking-[0.16em] text-secondary transition hover:brightness-110 md:flex"
+            className="hidden items-center gap-2 border border-primary/20 bg-primary px-5 py-3 font-display text-xs font-black uppercase tracking-[0.16em] text-secondary transition hover:brightness-110 md:inline-flex"
           >
             View All <ArrowUpRight className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
 
         <div className="overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -187,6 +189,15 @@ export function TrendingVenuesSection() {
               </article>
             ))}
           </div>
+        </div>
+
+        <div className="mt-8 md:hidden">
+          <Link
+            href="/venues"
+            className="inline-flex w-full items-center justify-center gap-2 border border-primary/20 bg-primary px-5 py-3 font-display text-xs font-black uppercase tracking-[0.16em] text-secondary transition hover:brightness-110"
+          >
+            View All <ArrowUpRight className="h-4 w-4" />
+          </Link>
         </div>
 
         {courtsQuery.isError ? (

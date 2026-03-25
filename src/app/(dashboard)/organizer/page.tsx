@@ -1,7 +1,5 @@
-import React from "react";
+import OrganizerDashboardOverview from "@/components/features/dashboard/organizer/OrganizerDashboardOverview";
 
-const OrganizerDashboard = () => {
-  return <div>page</div>;
-};
-
-export default OrganizerDashboard;
+export default function OrganizerDashboardPage() {
+  return <OrganizerDashboardOverview />;
+}

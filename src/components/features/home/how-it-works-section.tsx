@@ -48,7 +48,7 @@ export function HowItWorksSection() {
                     : ""
                 }`}
               >
-                <span className="pointer-events-none absolute right-4 top-2 font-display text-[4.2rem] font-black leading-none tracking-tight text-primary/7 sm:right-5 sm:text-[5rem]">
+                <span className="pointer-events-none absolute right-2 -top-3 md:-top-6 font-display text-[7rem] font-black leading-none tracking-tight text-primary/7 sm:-right-5 sm:text-[10rem]">
                   {step.id}
                 </span>
 
@@ -56,9 +56,9 @@ export function HowItWorksSection() {
                   <Icon className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" />
                 </div>
 
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary/60">
+                {/* <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary/60">
                   Step {step.id}
-                </p>
+                </p> */}
 
                 <h3 className="mt-2 font-display text-2xl font-black uppercase tracking-tight text-primary sm:text-[2rem]">
                   {step.title}

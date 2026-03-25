@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { Footer } from "@/components/shared/footer";
 import { Header } from "@/components/shared/header";
 import { getSession } from "@/lib/session";
 
@@ -11,10 +12,10 @@ export default async function CommonLayout({
   const session = await getSession();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex  min-h-screen flex-col">
       <Header initialSession={session} />
       <main className="flex-1">{children}</main>
-      {/* <Footer />  */}
+      <Footer />
     </div>
   );
 }

@@ -1,23 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
-
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarDays, MapPin, Search, Swords } from "lucide-react";
-
-const SPORT_SUGGESTIONS = [
-  "Football",
-  "Tennis",
-  "Basketball",
-  "Badminton",
-  "Padel",
-  "Futsal",
-];
+import Image from "next/image";
+import { SPORT_TYPES } from "@/lib/constants/sports";
 
 export function HeroSection() {
   const router = useRouter();
 
+  // STATES
   const [mobileQuery, setMobileQuery] = useState("");
   const [sport, setSport] = useState("");
   const [location, setLocation] = useState("");
@@ -25,13 +18,14 @@ export function HeroSection() {
 
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
 
-  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+  // HANDLERS
+  const submitSearch = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const mobileValue = mobileQuery.trim();
     const sportValue = sport.trim();
     const locationValue = location.trim() || mobileValue;
-    const exactMatchedSport = SPORT_SUGGESTIONS.find(
+    const exactMatchedSport = SPORT_TYPES.find(
       (item) => item.toLowerCase() === mobileValue.toLowerCase(),
     );
 
@@ -56,19 +50,20 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative flex min-h-[90vh] items-center overflow-hidden pt-20">
+    <section className="relative flex min-h-[87vh] md:min-h-[94vh] items-center overflow-hidden pt-20">
       <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=2000&q=80"
+        <Image
+          src="/hero.jpg"
           alt="Athletic action"
           className="h-full w-full object-cover"
+          fill
         />
         <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/30 to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-6 md:px-12">
-        <div className="max-w-4xl">
-          <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-black uppercase leading-[0.85] tracking-tight text-surface">
+        <div className="mx-auto max-w-4xl md:mx-0">
+          <h1 className="text-center font-display text-[clamp(3.8rem,18vw,8rem)] font-bold uppercase leading-[0.82] tracking-tight text-white md:text-left">
             The Arena
             <br />
             <span className="text-secondary">Awaits.</span>
@@ -155,13 +150,13 @@ export function HeroSection() {
           </div>
 
           <datalist id="hero-sport-suggestions">
-            {SPORT_SUGGESTIONS.map((item) => (
+            {SPORT_TYPES.map((item) => (
               <option key={item} value={item} />
             ))}
           </datalist>
 
           <div className="mt-3 hidden flex-wrap items-center gap-2 px-1 md:flex">
-            {SPORT_SUGGESTIONS.map((item) => {
+            {SPORT_TYPES.map((item) => {
               const isActive =
                 sport.trim().toLowerCase() === item.toLowerCase();
 

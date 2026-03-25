@@ -1,51 +1,7 @@
-/***
- * NODE PACKAGES
- */
-import { headers, cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-/**
- * SERVICES
- */
-// import { getStudentDashboardStats } from "@/service/user.service";
-// import { getAllBookings } from "@/service/booking.service";
+import UserDashboardOverview from "@/components/features/dashboard/user/UserDashboardOverview";
 
-/**
- * COMPONENTS
- */
-// import { StudentDashboardContent } from "./student-dashboard-content";
-import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
-
-/**
- * LIBS
- */
-import { requireUser } from "@/lib/session";
-
-export default async function UserDashboardPage() {
-  const user = await requireUser();
-  const cookieStore = await cookies();
-  // for tutor onboarding
-  const intendedRole = cookieStore.get("intended_role")?.value;
-
-  //   if (intendedRole === "tutor") {
-  //     redirect("/onboarding/tutor");
-  //   }
-
-  //   // route protection
-  //   if (user.role === "tutor") {
-  //     redirect("/tutor");
-  //   }
-
-  //   if (user.role === "admin") {
-  //     redirect("/admin");
-  //   }
-
-  return (
-    <Suspense fallback={<DashboardSkeleton />}>
-      {/* <DashboardDataWrapper /> */}
-      <div>User Dashboard</div>
-    </Suspense>
-  );
+export default function UserDashboardPage() {
+  return <UserDashboardOverview />;
 }
 
 // async function DashboardDataWrapper() {

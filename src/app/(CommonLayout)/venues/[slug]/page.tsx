@@ -6,6 +6,7 @@ import { courtService } from "@/service/court.service";
 import VenueDetails from "@/components/features/venues/details/VenueDetails";
 import { queryKeys } from "@/lib/query/query-keys";
 import { QUERY_STALE_TIME } from "@/lib/query/query-defaults";
+import Loading from "@/app/loading";
 
 export default function VenueDetailsPage() {
   const params = useParams();
@@ -27,18 +28,7 @@ export default function VenueDetailsPage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="inline-block">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-          </div>
-          <p className="text-primary font-body text-lg">
-            Loading venue details...
-          </p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Error state

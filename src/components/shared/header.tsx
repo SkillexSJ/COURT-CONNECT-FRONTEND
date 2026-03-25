@@ -42,6 +42,10 @@ export const navLinks = [
     href: "/",
   },
   {
+    label: "About",
+    href: "/about",
+  },
+  {
     label: "Organizers",
     href: "/organizers",
   },
@@ -109,7 +113,7 @@ export function Header({ initialSession }: HeaderProps) {
                 buttonVariants({ variant: "ghost" }),
                 "rounded-md px-4 text-sm font-medium",
                 pathname === link.href
-                  ? "bg-accent text-foreground"
+                  ? "bg-secondary text-primary hover:bg-secondary/90 hover:text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent/70",
               )}
               href={link.href}
