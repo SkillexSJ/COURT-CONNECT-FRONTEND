@@ -16,6 +16,16 @@ import type {
 } from "@/types/court.types";
 import type { ApiResponse, ListApiResponse } from "@/types/response";
 
+/**
+ * Court-related queries, including fetching courts and amenities.
+ */
+
+export const HOME_LANDING_COURTS_QUERY_PARAMS = {
+  status: "ACTIVE",
+  limit: 50,
+  sortBy: "-createdAt",
+} as const satisfies CourtQueryParams;
+
 export function useCourtsQuery(
   params: CourtQueryParams,
   options?: Omit<
@@ -30,6 +40,15 @@ export function useCourtsQuery(
     staleTime: QUERY_STALE_TIME.default,
     ...options,
   });
+}
+
+export function useHomeLandingCourtsQuery(
+  options?: Omit<
+    UseQueryOptions<ListApiResponse<CourtListItem>>,
+    "queryKey" | "queryFn"
+  >,
+) {
+  return useCourtsQuery(HOME_LANDING_COURTS_QUERY_PARAMS, options);
 }
 
 export function useAmenitiesQuery(

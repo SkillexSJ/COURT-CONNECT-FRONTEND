@@ -8,4 +8,5 @@ export const env = {
     typeof window === "undefined"
       ? process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
       : window.location.origin,
+  STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
 };
