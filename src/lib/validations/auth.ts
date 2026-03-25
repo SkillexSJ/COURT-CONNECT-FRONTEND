@@ -51,7 +51,7 @@ export const signUpSchema = z
 
 export type SignUpFormValues = z.infer<typeof signUpSchema>;
 
-// For organizer additional details (used later if needed)
+// For organizer additional details
 export const organizerDetailsSchema = z.object({
   businessName: z.string().min(2, "Business name is required"),
   phoneNumber: z

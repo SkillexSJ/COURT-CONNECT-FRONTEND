@@ -1,5 +1,9 @@
 import { env } from "@/config/env";
 
+/**
+ * ROBUST API CLIENT WITH BUILT-IN ERROR HANDLING AND RETRY LOGIC
+ */
+
 // header type define
 export type FetchOptions = Omit<RequestInit, "headers"> & {
   headers?: Record<string, string>;
@@ -18,10 +22,41 @@ export class ApiError extends Error {
 }
 
 const getErrorMessageFromData = (data: unknown): string | undefined => {
-  if (typeof data === "object" && data !== null && "message" in data) {
-    const maybeMessage = (data as { message?: unknown }).message;
+  if (typeof data === "object" && data !== null) {
+    const payload = data as {
+      message?: unknown;
+      code?: unknown;
+      details?: unknown;
+    };
+
+    const maybeMessage = payload.message;
     if (typeof maybeMessage === "string" && maybeMessage.trim().length > 0) {
+      // Prefer first field-level validation message
+      if (
+        maybeMessage === "Validation failed" &&
+        Array.isArray(payload.details)
+      ) {
+        const firstDetail = payload.details[0] as
+          | { message?: unknown }
+          | undefined;
+        if (
+          firstDetail &&
+          typeof firstDetail.message === "string" &&
+          firstDetail.message.trim().length > 0
+        ) {
+          return firstDetail.message;
+        }
+      }
       return maybeMessage;
+    }
+
+    const maybeCode = payload.code;
+    if (typeof maybeCode === "string" && maybeCode.trim().length > 0) {
+      return maybeCode
+        .toLowerCase()
+        .split("_")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
     }
   }
 

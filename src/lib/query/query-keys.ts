@@ -1,9 +1,14 @@
 import type { CourtQueryParams } from "@/types/court.types";
 import { createEntityQueryKeys } from "@/lib/query/query-key-factory";
 
+/**
+ * A CENTRALIZED DEFINITION OF QUERIES FOR TANSTACK
+ */
+
 const courtsEntityKeys = createEntityQueryKeys<CourtQueryParams>("courts");
 const organizerEntityKeys = createEntityQueryKeys("organizer");
 const scheduleEntityKeys = createEntityQueryKeys("schedule");
+const announcementEntityKeys = createEntityQueryKeys("announcements");
 
 const courtsQueryKeys = {
   ...courtsEntityKeys,
@@ -23,8 +28,17 @@ const scheduleQueryKeys = {
     [...scheduleEntityKeys.all, "available-slots", courtId, date] as const,
 };
 
+const announcementQueryKeys = {
+  ...announcementEntityKeys,
+  home: (params?: Record<string, unknown>) =>
+    [...announcementEntityKeys.all, "home", params ?? {}] as const,
+  venue: (courtId: string, params?: Record<string, unknown>) =>
+    [...announcementEntityKeys.all, "venue", courtId, params ?? {}] as const,
+};
+
 export const queryKeys = {
   courts: courtsQueryKeys,
   organizer: organizerQueryKeys,
   schedule: scheduleQueryKeys,
+  announcements: announcementQueryKeys,
 };
