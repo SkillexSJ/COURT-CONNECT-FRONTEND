@@ -27,6 +27,7 @@ export type CourtQueryParams = {
   page?: number;
   limit?: number;
   sortBy?: string;
+  organizerId?: string;
   // Deprecated alias kept for backward compatibility.
   sort?: string;
   status?: CourtStatus;
