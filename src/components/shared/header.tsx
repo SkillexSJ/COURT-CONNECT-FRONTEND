@@ -42,6 +42,10 @@ export const navLinks = [
     href: "/",
   },
   {
+    label: "Organizers",
+    href: "/organizers",
+  },
+  {
     label: "Venues",
     href: "/venues",
   },
