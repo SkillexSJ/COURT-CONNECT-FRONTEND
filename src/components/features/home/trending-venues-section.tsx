@@ -26,6 +26,7 @@ type TrendingVenueCard = {
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=1400&q=80";
 
+// HELPER FUNCTIONS 
 const getPriceNumber = (value: string | number) => {
   if (typeof value === "number") return value;
   const parsed = Number.parseFloat(value);

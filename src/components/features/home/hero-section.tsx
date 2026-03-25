@@ -55,6 +55,7 @@ export function HeroSection() {
         <Image
           src="/hero.jpg"
           alt="Athletic action"
+          loading="eager"
           className="h-full w-full object-cover"
           fill
         />
