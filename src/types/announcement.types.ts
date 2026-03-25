@@ -1,3 +1,5 @@
+import type { ListQuery } from "@/types/shared.types";
+
 export type AnnouncementType = "INFO" | "MAINTENANCE" | "PROMOTION";
 
 export type AnnouncementAudience = "HOME" | "VENUE";
@@ -35,3 +37,18 @@ export type UpdateAnnouncementPayload = Partial<{
   imageUrl: string | null;
   isPublished: boolean;
 }>;
+
+export type AnnouncementListQuery = ListQuery & {
+  type?: AnnouncementType;
+  audience?: AnnouncementAudience;
+  courtId?: string;
+  isPublished?: boolean;
+};
+
+export type HomeAnnouncementQuery = ListQuery & {
+  type?: AnnouncementType;
+};
+
+export type VenueAnnouncementQuery = ListQuery & {
+  type?: AnnouncementType;
+};

@@ -1,4 +1,5 @@
 import type { CourtListItem } from "@/types/court.types";
+import type { DaysRangeQuery } from "@/types/shared.types";
 
 export type OrganizerProfilePayload = {
   businessName: string;
@@ -112,3 +113,5 @@ export type OrganizerRevenueBreakdown = {
     slotCount: number;
   }>;
 };
+
+export type OrganizerRevenueQuery = DaysRangeQuery;

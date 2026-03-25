@@ -1,4 +1,4 @@
-import type { UserRole } from "@/types/shared.types";
+import type { DaysRangeQuery, ListQuery, UserRole } from "@/types/shared.types";
 
 export type AdminUserRole = UserRole;
 
@@ -72,11 +72,9 @@ export type AdminReportResponse = {
   }[];
 };
 
-export type AdminUsersQuery = {
-  searchTerm?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
+export type AdminUsersQuery = ListQuery & {
   role?: AdminUserRole;
   emailVerified?: boolean;
 };
+
+export type AdminReportsQuery = DaysRangeQuery;

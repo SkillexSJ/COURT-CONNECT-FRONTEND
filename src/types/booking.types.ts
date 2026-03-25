@@ -1,3 +1,5 @@
+import type { PaginationMeta } from "@/types/response";
+
 export type BookingStatus = "PENDING" | "PAID" | "CANCELLED" | "COMPLETED";
 
 export type BookingSlot = {
@@ -69,5 +71,5 @@ export type PaymentInitiateResponse = {
 
 export type BookingListResult = {
   data: Booking[];
-  meta: Record<string, unknown>;
+  meta?: PaginationMeta;
 };

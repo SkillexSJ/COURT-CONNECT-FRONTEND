@@ -1,3 +1,5 @@
+import type { ListQuery } from "@/types/shared.types";
+
 export type CouponDiscountType = "PERCENTAGE" | "FIXED";
 
 export type Coupon = {
@@ -47,4 +49,9 @@ export type ValidateCouponResponse = {
   bookingAmount: number;
   discountAmount: number;
   finalAmount: number;
+};
+
+export type AdminCouponQuery = ListQuery & {
+  discountType?: CouponDiscountType;
+  isActive?: boolean;
 };
