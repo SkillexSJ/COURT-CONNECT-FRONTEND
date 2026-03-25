@@ -13,7 +13,7 @@ const partners = [
 
 export function AboutPartners() {
   return (
-    <section className="py-20  sm:py-28 px-4 sm:px-6 lg:px-8  text-secondary-foreground">
+    <section className="py-20 mb-10 sm:py-28 px-4 sm:px-6 lg:px-8  text-secondary-foreground">
       <div className="max-w-360 mx-auto">
         <div className="text-center mb-16">
           <p className="text-xs font-black uppercase tracking-[0.18em]  mb-4">
@@ -33,10 +33,7 @@ export function AboutPartners() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
           {partners.map((partner, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-center "
-            >
+            <div key={idx} className="flex items-center justify-center ">
               <div className="w-full h-full bg-primary-foreground/5 flex items-center justify-center rounded">
                 <Image
                   src={`/images/placeholders/${partner.name.replace(/\s+/g, "-").toLowerCase()}.svg`}

@@ -8,8 +8,10 @@ import { useForm } from "react-hook-form";
 import {
   ArrowRight,
   BriefcaseBusiness,
+  ImagePlus,
   Loader2,
   UserRound,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signUpSchema, type SignUpFormValues } from "@/lib/validations/auth";
 import { authService } from "@/service/auth.service";
-import { organizerService } from "@/service/organizer.service";
 
 type Role = "USER" | "ORGANIZER";
 
@@ -173,6 +174,7 @@ export function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedRole, setSelectedRole] = React.useState<Role>("USER");
+  const [profileImage, setProfileImage] = React.useState<File | null>(null);
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -193,29 +195,30 @@ export function SignUpForm() {
     form.setValue("role", role, { shouldValidate: true });
   };
 
+  const handleProfileImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0] ?? null;
+    setProfileImage(file);
+  };
+
+  const clearProfileImage = () => {
+    setProfileImage(null);
+  };
+
   async function onSubmit(values: SignUpFormValues) {
     try {
       setIsLoading(true);
 
-      await authService.signUp({
+      await authService.signUpWithImage({
         name: values.name,
         email: values.email,
         password: values.password,
+        role: values.role,
+        businessName: values.businessName,
+        phoneNumber: values.phoneNumber,
+        imageFile: profileImage ?? undefined,
       });
-
-      if (values.role === "ORGANIZER") {
-        await organizerService.createProfile({
-          businessName: values.businessName?.trim() || "Organizer",
-          phoneNumber: values.phoneNumber?.trim() || undefined,
-        });
-
-        // Refresh auth session so role changes are reflected immediately.
-        await authService.signOut();
-        await authService.signIn({
-          email: values.email,
-          password: values.password,
-        });
-      }
 
       toast.success("Account created successfully!");
       router.push(values.role === "ORGANIZER" ? "/organizer" : "/");
@@ -293,6 +296,52 @@ export function SignUpForm() {
 
         <div className="space-y-5">
           <UserSignUpFields form={form} isLoading={isLoading} />
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="profileImage"
+              className="block text-xs font-bold tracking-widest uppercase text-foreground"
+            >
+              Profile Picture (Optional)
+            </Label>
+            <input
+              id="profileImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleProfileImageChange}
+              className="sr-only"
+              disabled={isLoading}
+            />
+
+            <div className="flex items-center gap-3 border-b-2 border-input pb-2">
+              <label
+                htmlFor="profileImage"
+                className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-none border border-border bg-muted px-3 text-xs font-bold uppercase tracking-wider text-foreground transition-colors hover:bg-accent"
+              >
+                <ImagePlus className="h-3.5 w-3.5" />
+                Browse
+              </label>
+
+              <p className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                {profileImage ? profileImage.name : "No file selected"}
+              </p>
+
+              {profileImage && (
+                <button
+                  type="button"
+                  onClick={clearProfileImage}
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-none border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  aria-label="Remove selected profile image"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              JPG, PNG, or WEBP up to 5MB.
+            </p>
+          </div>
 
           {selectedRole === "ORGANIZER" && (
             <OrganizerExtraFields form={form} isLoading={isLoading} />

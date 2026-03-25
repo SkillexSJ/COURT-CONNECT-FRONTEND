@@ -7,6 +7,8 @@ import {
   IconSearch,
   IconCategory,
   IconSettings,
+  IconTicket,
+  IconSpeakerphone,
 } from "@tabler/icons-react";
 
 export type UserRole = "USER" | "ORGANIZER" | "ADMIN";
@@ -68,6 +70,16 @@ export const dashboardConfig = {
         icon: IconCalendarEvent,
       },
       {
+        title: "Analytics",
+        url: "/organizer/analytics",
+        icon: IconChartBar,
+      },
+      {
+        title: "Announcements",
+        url: "/organizer/announcements",
+        icon: IconSpeakerphone,
+      },
+      {
         title: "Settings",
         url: "/organizer/settings",
         icon: IconSettings,
@@ -95,6 +107,16 @@ export const dashboardConfig = {
         title: "Bookings",
         url: "/admin/bookings",
         icon: IconCalendarEvent,
+      },
+      {
+        title: "Coupons",
+        url: "/admin/coupons",
+        icon: IconTicket,
+      },
+      {
+        title: "Announcements",
+        url: "/admin/announcements",
+        icon: IconSpeakerphone,
       },
       {
         title: "Reports",

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -16,8 +16,12 @@ import { authService } from "@/service/auth.service";
 
 export function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // STATE
   const [isLoading, setIsLoading] = React.useState(false);
 
+  // FORM SETUP
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
@@ -28,6 +32,7 @@ export function SignInForm() {
     },
   });
 
+  // SUBMISSION HANDLER
   async function onSubmit(values: SignInFormValues) {
     try {
       setIsLoading(true);
@@ -38,7 +43,12 @@ export function SignInForm() {
       });
 
       toast.success("Signed in successfully!");
-      router.push("/dashboard");
+
+      const callbackUrl = searchParams.get("callbackUrl");
+      const nextPath =
+        callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/dashboard";
+
+      router.push(nextPath);
       router.refresh();
     } catch (error: unknown) {
       const message =
