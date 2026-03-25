@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Clock3, ReceiptText } from "lucide-react";
 import { BookingService } from "@/service/booking.service";
 import { Booking } from "@/types/booking.types";
+import Loading from "@/app/loading";
 
 const getStatusLabel = (status?: Booking["status"]) => {
   if (status === "PAID") return "Payment Confirmed";
@@ -17,9 +18,12 @@ const getStatusLabel = (status?: Booking["status"]) => {
 export default function SuccessPage() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("bookingId");
+
+  // STATES
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // EFFECT - FETCH BOOKING DETAILS
   useEffect(() => {
     const fetchBooking = async () => {
       if (!bookingId) {
@@ -41,18 +45,14 @@ export default function SuccessPage() {
   }, [bookingId]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary/20 border-b-primary" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   return (
-    <main className="min-h-screen bg-background py-8 sm:py-10 lg:py-14">
-      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
+    <main className="w-full max-w-6xl mx-auto mt-10 bg-background py-8 sm:py-10 lg:py-14">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-sm border border-border bg-card shadow-md">
-          <div className="bg-[radial-gradient(circle_at_25%_20%,rgba(193,241,0,0.20),transparent_42%),linear-gradient(145deg,#012d1d_0%,#103f2c_100%)] px-5 py-8 text-primary-foreground sm:px-8 sm:py-10">
+          <div className="bg-primary px-5 py-8 text-primary-foreground sm:px-8 sm:py-10">
             <div className="flex flex-col items-center gap-5 text-center">
               <div className="rounded-full border border-primary-foreground/30 bg-primary-foreground/10 p-3">
                 <CheckCircle2 className="h-10 w-10 text-secondary" />
@@ -84,23 +84,13 @@ export default function SuccessPage() {
                     {booking?.bookingCode ?? "Pending"}
                   </p>
                 </div>
-                <div className="rounded-sm border border-primary-foreground/20 bg-primary-foreground/8 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-primary-foreground/70">
-                    Payment
-                  </p>
-                  <p className="mt-1 font-heading text-base font-black">
-                    {booking
-                      ? `USD ${Number(booking.totalAmount).toFixed(2)}`
-                      : "--"}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
 
-          <div className="space-y-5 px-5 py-6 sm:px-8 sm:py-8">
-            <div className="rounded-sm border border-secondary/40 bg-secondary/15 p-4">
-              <p className="text-sm text-primary/85">
+          <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:grid-cols-[1fr_2fr]">
+            <div className="rounded-sm h-fit border border-secondary/40 bg-secondary/15 p-4">
+              <p className="text-sm text-primary">
                 <span className="font-bold">Note:</span> Your booking is now
                 confirmed. Any older pending bookings from previous attempts
                 will auto-expire after 24 hours.
@@ -175,7 +165,9 @@ export default function SuccessPage() {
                 </div>
               </section>
             )}
+          </div>
 
+          <div className="space-y-4 border-t border-border px-5 py-6 sm:px-8 sm:py-8">
             {booking && booking.status !== "PAID" && (
               <div className="inline-flex items-center gap-2 rounded-none border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-bold text-amber-700">
                 <Clock3 className="h-4 w-4" />
@@ -192,7 +184,7 @@ export default function SuccessPage() {
               </Link>
               <Link
                 href="/"
-                className="inline-flex items-center justify-center rounded-sm border border-secondary bg-secondary/20 px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary transition-colors hover:bg-secondary/30"
+                className="inline-flex items-center justify-center rounded-sm border border-secondary bg-secondary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary transition-colors hover:bg-secondary/90"
               >
                 Back to Home
               </Link>
@@ -208,6 +200,7 @@ export default function SuccessPage() {
   );
 }
 
+// COMPONENT ITEM
 function DetailItem({
   label,
   value,
@@ -223,12 +216,12 @@ function DetailItem({
 }) {
   return (
     <div className={className}>
-      <div className="rounded-sm border border-border bg-card p-3">
+      <div className="rounded-sm border bg-card p-3">
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           {label}
         </p>
         <p
-          className={`mt-1 text-sm font-bold text-primary ${mono ? "font-mono" : ""} ${emphasized ? "font-heading text-lg text-secondary" : ""}`}
+          className={`mt-1 text-sm font-bold text-primary ${mono ? "font-mono" : ""} ${emphasized ? "font-heading text-lg text-primary" : ""}`}
         >
           {value}
         </p>
