@@ -129,6 +129,7 @@ export function FeaturedSpotlightSection() {
           <div className="relative aspect-square overflow-hidden border border-primary-foreground/10 bg-black/35 lg:rounded-sm">
             <Image
               src={spotlightVenue.image}
+              loading="eager"
               alt={spotlightVenue.imageAlt}
               className="h-full w-full object-cover"
               fill
