@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AppSidebar } from "@/components/features/dashboard/shared/AppSidebar";
 import { DashboardWeatherChip } from "@/components/features/dashboard/shared/DashboardWeatherChip";
 import {
