@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { CourtAmenity } from "@/types/court.types";
 
 import {
@@ -73,7 +74,10 @@ export function AmenitiesSection({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading amenities...</p>
+          <LoadingSpinner
+            label="Loading amenities..."
+            className="text-sm text-muted-foreground"
+          />
         ) : amenities.length === 0 ? (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">

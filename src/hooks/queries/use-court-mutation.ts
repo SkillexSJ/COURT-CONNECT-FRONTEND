@@ -98,3 +98,17 @@ export function useDeleteCourtMutation() {
     },
   });
 }
+
+export function useApproveCourtMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (courtId: string) => courtService.approveCourtByAdmin(courtId),
+    onSuccess: async () => {
+      await invalidateEntityList(queryClient, queryKeys.courts.lists());
+      await queryClient.invalidateQueries({
+        queryKey: ["admin-dashboard-pending-courts"],
+      });
+    },
+  });
+}

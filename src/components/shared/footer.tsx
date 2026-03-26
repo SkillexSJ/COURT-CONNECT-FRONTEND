@@ -39,6 +39,7 @@ export function Footer() {
                     src="/logo.svg"
                     alt="Court Connect Logo"
                     fill
+                    loading="eager"
                     className="object-contain scale-220"
                     sizes="(max-width: 640px) 40px, 80px"
                   />

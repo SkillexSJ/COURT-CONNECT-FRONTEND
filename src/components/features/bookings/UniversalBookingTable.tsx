@@ -204,6 +204,7 @@ export function UniversalBookingTable({
                   src={getVenueImage(booking)}
                   alt={getVenueName(booking)}
                   fill
+                  loading="eager"
                   className="object-cover"
                   sizes="56px"
                 />

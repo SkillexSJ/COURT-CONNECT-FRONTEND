@@ -110,6 +110,7 @@ export function CheckoutOrderPanel({
             src={"/image2.png"}
             alt={booking.court?.name ?? "Venue image"}
             fill
+            loading="eager"
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
           />
