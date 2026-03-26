@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconMapPin } from "@tabler/icons-react";
+import { SPORT_TYPES } from "@/lib/constants/sports";
 
 import type { VenueFormValues } from "../venue-form.schema";
 
@@ -44,11 +45,11 @@ export function CourtDetailsSection({ form }: Props) {
               {...form.register("type")}
               className="h-10 w-full border border-input bg-background px-3 text-sm"
             >
-              <option>Indoor Tennis</option>
-              <option>Clay Court</option>
-              <option>Padel Court</option>
-              <option>Football Turf</option>
-              <option>Badminton Court</option>
+              {SPORT_TYPES.map((sportType) => (
+                <option key={sportType} value={sportType}>
+                  {sportType}
+                </option>
+              ))}
             </select>
           </div>
         </div>
