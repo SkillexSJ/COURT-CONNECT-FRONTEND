@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "Court Connect",
   description:
     "Your destination for seamless court bookings and exclusive athletic experiences.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
