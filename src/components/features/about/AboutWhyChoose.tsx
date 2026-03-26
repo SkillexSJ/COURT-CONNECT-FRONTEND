@@ -45,8 +45,8 @@ export function AboutWhyChoose() {
     <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-surface">
       <div className="max-w-360 mx-auto">
         <div className="text-center mb-16">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary mb-4">
-            Why Court Connect
+          <p className="text-xs font-black text-primary uppercase tracking-[0.18em] mb-4">
+            Why Court Connect ?
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-primary">
             Everything Athletes
