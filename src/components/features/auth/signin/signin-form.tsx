@@ -88,7 +88,7 @@ export function SignInForm() {
             <Input
               id="email"
               type="email"
-              placeholder="alex@elitearena.com"
+              placeholder="alex@courtconnect.com"
               {...form.register("email")}
               className={`bg-transparent border-0 border-b-2 rounded-none px-0 py-2.5 md:py-3 focus-visible:ring-0 focus-visible:border-primary transition-colors text-sm md:text-base ${
                 form.formState.errors.email
