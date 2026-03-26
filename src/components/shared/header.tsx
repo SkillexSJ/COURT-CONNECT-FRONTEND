@@ -34,8 +34,6 @@ import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 import type { Session } from "@/lib/session";
 import { useScroll } from "@/hooks/use-scroll";
-
-// Nav Links
 export const navLinks = [
   {
     label: "Home",
@@ -55,25 +53,14 @@ export const navLinks = [
   },
 ];
 
-interface HeaderProps {
-  initialSession?: Session | null;
-}
+interface HeaderProps {}
 
-export function Header({ initialSession }: HeaderProps) {
+export function Header({}: HeaderProps) {
   const scrolled = useScroll(10);
   const pathname = usePathname();
-  const { data: sessionData, isPending: isPendingHook } =
-    authClient.useSession();
+  const { data: rawSession, isPending } = authClient.useSession();
+  const session = rawSession as Session | null;
   const router = useRouter();
-
-  //  hydration fix
-  const session = (
-    sessionData === undefined && initialSession !== undefined
-      ? initialSession
-      : (sessionData ?? initialSession)
-  ) as Session | null;
-
-  const isPending = isPendingHook && initialSession === undefined;
 
   const handleSignOut = async () => {
     await authClient.signOut();

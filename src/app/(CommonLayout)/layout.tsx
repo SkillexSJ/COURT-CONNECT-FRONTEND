@@ -2,18 +2,11 @@ import type { ReactNode } from "react";
 
 import { Footer } from "@/components/shared/footer";
 import { Header } from "@/components/shared/header";
-import { getSession } from "@/lib/session";
 
-export default async function CommonLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const session = await getSession();
-
+export default function CommonLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex  min-h-screen flex-col">
-      <Header initialSession={session} />
+    <div className="flex min-h-screen flex-col">
+      <Header />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>
