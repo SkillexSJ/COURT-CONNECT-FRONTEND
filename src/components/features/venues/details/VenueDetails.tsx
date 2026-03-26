@@ -21,6 +21,7 @@ import VenueHeader from "./VenueHeader";
 import VenueAbout from "./VenueAbout";
 import VenueBookingSidebar from "./VenueBookingSidebar";
 import VenueBookingSlot from "./VenueBookingSlot";
+import VenueReviews from "./review/VenueReviews";
 import { VENUE_FALLBACK_IMAGE } from "@/lib/placeholders";
 import { authClient } from "@/lib/auth-client";
 import type { ValidateCouponResponse } from "@/types/coupon.types";
@@ -486,6 +487,7 @@ export default function VenueDetails({ venue }: VenueDetailsProps) {
                           src={primaryImage}
                           alt={court.name}
                           fill
+                          loading="eager"
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, 40vw"
                         />
@@ -574,6 +576,7 @@ export default function VenueDetails({ venue }: VenueDetailsProps) {
                         src={primaryImage}
                         alt={court.name}
                         fill
+                        loading="eager"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 40vw"
                       />
@@ -595,6 +598,11 @@ export default function VenueDetails({ venue }: VenueDetailsProps) {
             </div>
           )}
         </section>
+
+        {/* Reviews & Community Section  */}
+        <div className="lg:col-span-8 lg:col-start-1 lg:mt-5">
+          <VenueReviews courtId={venue.id} />
+        </div>
       </div>
     </main>
   );

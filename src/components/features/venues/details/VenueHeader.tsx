@@ -1,21 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, Image as ImageIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AVATAR_FALLBACK_IMAGE, getInitials } from "@/lib/placeholders";
 import { CourtDetails } from "@/types/court.types";
+import { useReviewsQuery } from "@/hooks/queries/use-reviews-query";
 
 interface VenueHeaderProps {
   venue: CourtDetails;
 }
 
 export default function VenueHeader({ venue }: VenueHeaderProps) {
-  const primaryImage =
+  // Query for dynamic reviews
+  const { data: reviewsData } = useReviewsQuery({
+    courtId: venue.id,
+    limit: 100,
+  });
+  const reviews = reviewsData?.data ?? [];
+
+  const averageRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((acc, curr) => acc + (curr.rating ?? 0), 0) /
+          reviews.length
+        ).toFixed(1)
+      : "0.0";
+
+  // Dynamic Image State
+  const defaultImage =
     venue.media?.find((m) => m.isPrimary)?.url || venue.media?.[0]?.url;
+  const [activeImage, setActiveImage] = useState<string | undefined>(
+    defaultImage,
+  );
+
   const bookingCount = venue._count?.bookings || 0;
-  const averageRating = 4.8; // TODO: Get from actual rating data
   const organizerName =
     venue.organizer.businessName?.trim() ||
     venue.organizer.user?.name?.trim() ||
@@ -26,12 +47,13 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
   return (
     <section className="relative h-[72vh] min-h-130 w-full overflow-hidden sm:h-[78vh] lg:h-[85vh]">
       {/* Hero Image */}
-      {primaryImage ? (
+      {activeImage ? (
         <Image
           alt={venue.name}
-          src={primaryImage}
+          src={activeImage}
           fill
-          className="w-full h-full object-cover"
+          loading="eager"
+          className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
           sizes="100vw"
           priority
         />
@@ -41,6 +63,38 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/40 to-primary/10" />
+
+      {/* Top Gallery Tool (if multiple images) */}
+      {venue.media && venue.media.length > 1 && (
+        <div className="absolute top-24 right-4 sm:top-32 sm:right-8 flex flex-col items-end gap-3 z-10">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/60 backdrop-blur-md border border-white/20 rounded-sm text-secondary text-[10px] uppercase font-bold tracking-widest">
+            <ImageIcon className="w-3.5 h-3.5" />
+            Media Gallery
+          </div>
+          <div className="flex gap-2 max-w-[50vw] sm:max-w-md overflow-x-auto hide-scrollbar p-1">
+            {venue.media.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveImage(img.url)}
+                className={`relative h-12 w-16 sm:h-16 sm:w-24 shrink-0 rounded-xs overflow-hidden border-2 transition-all ${
+                  activeImage === img.url
+                    ? "border-secondary scale-105"
+                    : "border-white/20 opacity-70 hover:opacity-100 hover:border-white/50"
+                }`}
+              >
+                <Image
+                  src={img.url}
+                  alt={`Gallery thumbnail ${idx + 1}`}
+                  fill
+                  loading="eager"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100px, 150px"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 flex w-full flex-col items-start justify-between gap-6 p-4 sm:p-8 md:flex-row md:items-end md:gap-8 md:p-16">
