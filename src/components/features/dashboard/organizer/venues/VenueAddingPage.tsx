@@ -3,10 +3,10 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { courtService, type CourtAmenity } from "@/service/court.service";
 import { scheduleService } from "@/service/schedule.service";
 
 import {
@@ -14,15 +14,28 @@ import {
   venueFormSchema,
   type VenueFormValues,
 } from "./venue-form.schema";
+
+// IMPORTING SECTIONS
 import { AmenitiesSection } from "./sections/AmenitiesSection";
 import { CourtDetailsSection } from "./sections/CourtDetailsSection";
 import { CourtMediaSection } from "./sections/CourtMediaSection";
 import { SlotTemplatesSection } from "./sections/SlotTemplatesSection";
 import { VenueFormActions } from "./sections/VenueFormActions";
 import { VenuePageHeader } from "./sections/VenuePageHeader";
+import { CourtAmenity } from "@/types/court.types";
+import { courtService } from "@/service/court.service";
+import { organizerService } from "@/service/organizer.service";
+import Loading from "@/app/loading";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { SPORT_TYPES } from "@/lib/constants/sports";
 
 export function VenueAddingPage() {
   const router = useRouter();
+
+  /**
+   * STATES
+   */
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [amenities, setAmenities] = React.useState<CourtAmenity[]>([]);
   const [isAmenitiesLoading, setIsAmenitiesLoading] = React.useState(true);
@@ -33,11 +46,19 @@ export function VenueAddingPage() {
   );
   const [galleryImages, setGalleryImages] = React.useState<File[]>([]);
 
+  // QUERY FOR ORGANIZER PROFILE
+  const organizerProfileQuery = useQuery({
+    queryKey: ["organizer-profile-for-venue-create"],
+    queryFn: () => organizerService.getProfile(),
+    staleTime: 30_000,
+  });
+
+  // REACT HOOK FORM
   const form = useForm<VenueFormValues>({
     resolver: zodResolver(venueFormSchema),
     defaultValues: {
       name: "",
-      type: "Indoor Tennis",
+      type: SPORT_TYPES[0],
       locationLabel: "",
       description: "",
       basePrice: 0,
@@ -60,6 +81,7 @@ export function VenueAddingPage() {
     name: "slots",
   });
 
+  // USE EFFECT FOR LOADING AMENITIES
   React.useEffect(() => {
     const loadAmenities = async () => {
       try {
@@ -78,12 +100,17 @@ export function VenueAddingPage() {
     void loadAmenities();
   }, []);
 
+  // USE EFFECT FOR CLEANING UP OBJECT URLS
   React.useEffect(() => {
     return () => {
       if (primaryPreview) URL.revokeObjectURL(primaryPreview);
     };
   }, [primaryPreview]);
 
+  /**
+   *
+   * HANDLERS FOR IMAGE UPLOADS AND OTHER
+   */
   const handlePrimaryImageChange = (file: File | null) => {
     if (primaryPreview) {
       URL.revokeObjectURL(primaryPreview);
@@ -184,6 +211,39 @@ export function VenueAddingPage() {
   };
 
   const selectedAmenityIds = form.watch("amenityIds") ?? [];
+
+  const isOrganizerVerified = Boolean(
+    organizerProfileQuery.data?.data?.isVerified,
+  );
+  const profileLoadFailed = organizerProfileQuery.isError;
+
+  if (organizerProfileQuery.isLoading) {
+    return <Loading />;
+  }
+
+  if (profileLoadFailed || !isOrganizerVerified) {
+    const message = profileLoadFailed
+      ? "You need an organizer profile before creating a venue."
+      : "Your organizer profile is pending verification. You cannot create venues yet.";
+
+    return (
+      <div className="mx-auto w-full max-w-7xl space-y-10 py-8">
+        <VenuePageHeader />
+        <Card className="rounded-none border border-border bg-card">
+          <CardContent className="space-y-4 p-6">
+            <p className="text-sm text-muted-foreground">{message}</p>
+            <Button
+              type="button"
+              className="rounded-none"
+              onClick={() => router.push("/organizer")}
+            >
+              Back to Organizer Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-10 py-8">
