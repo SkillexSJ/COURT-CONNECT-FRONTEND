@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 
 interface VenueBookingSidebarProps {
@@ -9,6 +7,13 @@ interface VenueBookingSidebarProps {
   selectedSlot?: string;
   basePrice: number | string;
   totalPrice?: number;
+  couponCode?: string;
+  onCouponCodeChange?: (value: string) => void;
+  onApplyCoupon?: () => void;
+  onRemoveCoupon?: () => void;
+  appliedCouponCode?: string | null;
+  discountAmount?: number;
+  isApplyingCoupon?: boolean;
   onBookNow?: () => void;
   isLoading?: boolean;
 }
@@ -18,41 +23,51 @@ export default function VenueBookingSidebar({
   selectedSlot,
   basePrice,
   totalPrice = 0,
+  couponCode = "",
+  onCouponCodeChange,
+  onApplyCoupon,
+  onRemoveCoupon,
+  appliedCouponCode,
+  discountAmount = 0,
+  isApplyingCoupon = false,
   onBookNow,
   isLoading = false,
 }: VenueBookingSidebarProps) {
+
+  // HELPERS
   const priceValue =
     typeof basePrice === "string" ? parseFloat(basePrice) : basePrice;
-  const taxAmount = (priceValue * 0.18).toFixed(2);
-  const total = totalPrice || priceValue + parseFloat(taxAmount);
+  const hasProvidedDiscountedBase =
+    typeof totalPrice === "number" && totalPrice > 0;
+  const discountedBase = hasProvidedDiscountedBase
+    ? totalPrice
+    : Math.max(0, priceValue - discountAmount);
+  const taxAmount = discountedBase * 0.18;
+  const total = discountedBase + taxAmount;
 
   return (
     <div className="lg:col-span-4">
-      <div className="sticky top-32 bg-primary p-10 rounded-sm shadow-2xl space-y-10">
+      <div className="space-y-7 rounded-sm bg-primary p-5 shadow-2xl sm:p-7 lg:sticky lg:top-32 lg:space-y-10 lg:p-10">
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
             <p className="text-white/60 text-xs uppercase tracking-widest font-bold">
               Booking Summary
             </p>
-            <h3 className="text-white font-headline font-bold text-xl uppercase mt-1">
+            <h3 className="mt-1 font-headline text-lg font-bold text-white uppercase sm:text-xl">
               Reservation
             </h3>
-          </div>
-          <div className="flex items-center gap-1.5 bg-secondary/20 border border-secondary/40 px-3 py-1.5 rounded-sm">
-            <AlertCircle className="w-4 h-4 text-secondary" />
-            <span className="text-secondary font-bold text-xs">INFO</span>
           </div>
         </div>
 
         {/* Selected Info */}
         <div className="space-y-4">
           {/* Selected Date */}
-          <div className="p-5 bg-white/5 border-l-4 border-secondary group hover:bg-white/10 transition-colors">
+          <div className="group border-l-4 border-secondary bg-white/5 p-4 transition-colors hover:bg-white/10 sm:p-5">
             <p className="text-white/60 font-bold text-xs uppercase tracking-widest group-hover:text-white">
               Selected Date
             </p>
-            <p className="text-white font-headline font-bold text-lg mt-2">
+            <p className="mt-2 font-headline text-base font-bold text-white sm:text-lg">
               {selectedDate
                 ? format(selectedDate, "MMM dd, yyyy")
                 : "Not Selected"}
@@ -60,34 +75,75 @@ export default function VenueBookingSidebar({
           </div>
 
           {/* Selected Time */}
-          <div className="p-5 bg-white/5 border-l-4 border-secondary group hover:bg-white/10 transition-colors">
+          <div className="group border-l-4 border-secondary bg-white/5 p-4 transition-colors hover:bg-white/10 sm:p-5">
             <p className="text-white/60 font-bold text-xs uppercase tracking-widest group-hover:text-white">
               Selected Time
             </p>
-            <p className="text-white font-headline font-bold text-lg mt-2">
+            <p className="mt-2 font-headline text-base font-bold text-white sm:text-lg">
               {selectedSlot || "Not Selected"}
             </p>
           </div>
         </div>
 
         {/* Price Breakdown */}
-        <div className="space-y-4 pt-6 border-t border-white/10">
+        <div className="space-y-4 border-t border-white/10 pt-5 sm:pt-6">
           <div className="flex justify-between text-white/60 font-medium text-xs uppercase tracking-widest">
             <span>Base Price</span>
-            <span>₹{priceValue.toFixed(2)}</span>
+            <span>${priceValue.toFixed(2)}</span>
           </div>
+          {appliedCouponCode ? (
+            <div className="flex justify-between text-secondary font-medium text-xs uppercase tracking-widest">
+              <span>Discount ({appliedCouponCode})</span>
+              <span>-${discountAmount.toFixed(2)}</span>
+            </div>
+          ) : null}
           <div className="flex justify-between text-white/60 font-medium text-xs uppercase tracking-widest">
             <span>Tax (18%)</span>
-            <span>₹{taxAmount}</span>
+            <span>${taxAmount.toFixed(2)}</span>
           </div>
-          <div className="pt-6 border-t border-white/20 flex justify-between items-end">
+          <div className="flex items-end justify-between border-t border-white/20 pt-5 sm:pt-6">
             <span className="text-white/60 font-bold text-xs uppercase tracking-widest">
               Total Amount
             </span>
-            <span className="text-secondary font-headline font-black text-3xl">
-              ₹{total.toFixed(2)}
+            <span className="font-headline text-2xl font-black text-secondary sm:text-3xl">
+              ${total.toFixed(2)}
             </span>
           </div>
+        </div>
+
+        <div className="space-y-3 border-t border-white/10 pt-5 sm:pt-6">
+          <p className="text-white/60 font-bold text-xs uppercase tracking-widest">
+            Promo Code
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={couponCode}
+              onChange={(event) => onCouponCodeChange?.(event.target.value)}
+              placeholder="Enter code"
+              className="h-11 w-full rounded-sm border border-white/15 bg-white/5 px-3 text-sm uppercase tracking-[0.12em] text-white placeholder:text-white/35"
+            />
+            <button
+              type="button"
+              disabled={isApplyingCoupon || !couponCode.trim()}
+              onClick={onApplyCoupon}
+              className="rounded-sm border border-secondary/60 px-4 text-xs font-bold uppercase tracking-[0.12em] text-secondary transition-colors hover:bg-secondary/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isApplyingCoupon ? "..." : "Apply"}
+            </button>
+          </div>
+
+          {appliedCouponCode ? (
+            <div className="flex items-center justify-between rounded-sm border border-secondary/30 bg-secondary/10 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-secondary">
+              <span>{appliedCouponCode} applied</span>
+              <button
+                type="button"
+                onClick={onRemoveCoupon}
+                className="text-secondary underline-offset-2 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {/* CTA Button */}
@@ -95,14 +151,10 @@ export default function VenueBookingSidebar({
           <button
             onClick={onBookNow}
             disabled={isLoading || !selectedDate || !selectedSlot}
-            className="w-full bg-secondary text-primary font-headline font-black py-6 uppercase text-sm tracking-[0.25em] shadow-lg hover:bg-[#d4ff00] transition-all transform active:scale-95 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-sm bg-secondary py-4 text-sm font-headline font-black tracking-[0.2em] text-primary shadow-lg transition-all hover:bg-secondary/80 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:py-5 sm:tracking-[0.25em]"
           >
             {isLoading ? "Booking..." : "Book Now"}
           </button>
-          <p className="text-white/50 font-body text-xs text-center leading-relaxed">
-            TODO: Booking functionality will be implemented next. Select a date
-            and time to prepare your reservation.
-          </p>
         </div>
       </div>
     </div>

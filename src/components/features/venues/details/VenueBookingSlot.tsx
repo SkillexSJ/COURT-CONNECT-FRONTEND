@@ -1,9 +1,6 @@
 "use client";
 
 import { CourtSlotTemplate } from "@/types/court.types";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-
 interface VenueBookingSlotProps {
   slot: CourtSlotTemplate;
   date: Date;
@@ -38,10 +35,10 @@ export default function VenueBookingSlot({
     return (
       <button
         onClick={handleSelect}
-        className="py-5 border-2 border-primary text-center font-headline font-bold text-sm bg-primary text-secondary rounded-sm uppercase tracking-widest shadow-lg hover:shadow-xl transition-shadow"
+        className="rounded-sm border-2 border-primary bg-primary px-2 py-3 text-center font-headline text-xs font-bold tracking-wide text-secondary uppercase shadow-lg transition-shadow hover:shadow-xl sm:py-5 sm:text-sm sm:tracking-widest"
       >
         {timeDisplay}
-        <div className="text-xs mt-1 opacity-90">₹{price}</div>
+        <div className="text-xs mt-1 opacity-90">${price}</div>
       </button>
     );
   }
@@ -50,7 +47,7 @@ export default function VenueBookingSlot({
     return (
       <button
         disabled
-        className="py-5 border border-primary/10 text-center font-headline font-bold text-sm bg-surface-variant/50 opacity-40 cursor-not-allowed rounded-sm uppercase tracking-widest line-through"
+        className="cursor-not-allowed rounded-sm border border-primary/10 bg-surface-variant/50 px-2 py-3 text-center font-headline text-xs font-bold tracking-wide text-primary uppercase opacity-40 line-through sm:py-5 sm:text-sm sm:tracking-widest"
       >
         {timeDisplay}
         <div className="text-xs mt-1 opacity-90">Full</div>
@@ -61,11 +58,11 @@ export default function VenueBookingSlot({
   return (
     <button
       onClick={handleSelect}
-      className="py-5 border border-primary/20 text-center font-headline font-bold text-sm text-primary hover:border-primary hover:bg-primary/10 hover:text-primary transition-all rounded-sm uppercase tracking-widest group"
+      className="group rounded-sm border border-primary/20 px-2 py-3 text-center font-headline text-xs font-bold tracking-wide text-primary uppercase transition-all hover:border-primary hover:bg-primary/10 hover:text-primary sm:py-5 sm:text-sm sm:tracking-widest"
     >
       <div>{timeDisplay}</div>
       <div className="text-xs text-primary/70 group-hover:text-primary mt-1">
-        ₹{price}
+        ${price}
       </div>
     </button>
   );

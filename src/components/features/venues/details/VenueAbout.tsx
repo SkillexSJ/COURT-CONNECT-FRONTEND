@@ -10,6 +10,7 @@ import {
   Wifi,
   type LucideIcon,
 } from "lucide-react";
+
 import { CourtDetails, CourtAmenity } from "@/types/court.types";
 
 interface VenueAboutProps {
@@ -47,7 +48,7 @@ const AmenityIcon = ({
 };
 
 export default function VenueAbout({ venue }: VenueAboutProps) {
-  // Sample amenity icons - map amenity names to meaningful descriptions
+  //  amenity icons
   const amenityDescriptions: Record<string, string> = {
     Parking: "Free Parking Available",
     WiFi: "High-Speed WiFi",
@@ -59,22 +60,55 @@ export default function VenueAbout({ venue }: VenueAboutProps) {
     Food: "Food & Beverages",
   };
 
+  // const organizerName =
+  //   venue.organizer.businessName?.trim() ||
+  //   venue.organizer.user?.name?.trim() ||
+  //   "Organizer";
+  // const organizerAvatar =
+  //   venue.organizer.user?.avatarUrl || AVATAR_FALLBACK_IMAGE;
+
   return (
-    <div className="space-y-24">
+    <div className="space-y-14 lg:space-y-24">
+      {/* <section className="rounded-sm border border-primary/15 bg-primary/3 p-6 md:p-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Avatar className="size-14 border border-primary/20">
+              <AvatarImage src={organizerAvatar} alt={organizerName} />
+              <AvatarFallback className="bg-primary/10 text-primary">
+                {getInitials(organizerName)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-primary/60">
+                Organization
+              </p>
+              <p className="font-headline text-xl font-black uppercase tracking-tight text-primary">
+                {organizerName}
+              </p>
+            </div>
+          </div>
+          {venue.organizer.bio && (
+            <p className="max-w-2xl text-sm leading-relaxed text-primary/80">
+              {venue.organizer.bio}
+            </p>
+          )}
+        </div>
+      </section> */}
+
       {/* Experience Narrative Section */}
-      <section className="space-y-8">
-        <div className="flex items-center gap-4">
-          <h2 className="font-headline font-black text-3xl uppercase tracking-tighter text-primary">
+      <section className="space-y-6 sm:space-y-8">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <h2 className="font-headline text-2xl font-black uppercase tracking-tight text-primary sm:text-3xl sm:tracking-tighter">
             Experience
           </h2>
           <div className="h-0.5 grow bg-primary/15" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
+        <div className="grid grid-cols-1 items-start gap-6 sm:gap-8 md:grid-cols-5 md:gap-12">
           {/* Court Type Badge */}
-          <div className="md:col-span-2 space-y-4">
-            <div className="inline-block bg-secondary/10 border border-secondary/30 px-4 py-2 rounded-sm">
-              <p className="text-secondary font-headline font-bold text-sm uppercase tracking-widest">
+          <div className="space-y-3 md:col-span-2 md:space-y-4">
+            <div className="inline-block bg-primary border border-secondary/30 px-4 py-2 rounded-sm">
+              <p className="font-headline text-xs font-bold uppercase tracking-widest text-secondary sm:text-sm">
                 {venue.type}
               </p>
             </div>
@@ -84,7 +118,7 @@ export default function VenueAbout({ venue }: VenueAboutProps) {
           </div>
 
           {/* Description */}
-          <div className="md:col-span-3 space-y-6 text-primary leading-relaxed font-body">
+          <div className="space-y-4 font-body leading-relaxed text-primary md:col-span-3 md:space-y-6">
             <p>
               {venue.description ||
                 "Welcome to our premier sports facility. This venue is equipped with state-of-the-art amenities and designed to provide an exceptional experience for all athletes."}
@@ -99,20 +133,20 @@ export default function VenueAbout({ venue }: VenueAboutProps) {
       </section>
 
       {/* Amenities Section */}
-      <section className="space-y-8">
-        <div className="flex items-center gap-4">
-          <h2 className="font-headline font-black text-3xl uppercase tracking-tighter text-primary">
+      <section className="space-y-6 sm:space-y-8">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <h2 className="font-headline text-2xl font-black uppercase tracking-tight text-primary sm:text-3xl sm:tracking-tighter">
             Amenities
           </h2>
           <div className="h-0.5 grow bg-primary/15" />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-4">
           {venue.amenities && venue.amenities.length > 0
             ? venue.amenities.slice(0, 4).map((amenity) => (
                 <div
                   key={amenity.id}
-                  className="group p-8 border border-primary/10 bg-primary/5 hover:bg-primary hover:text-secondary transition-all duration-300 rounded-sm cursor-pointer"
+                  className="group cursor-pointer rounded-sm border border-primary/10 bg-primary/5 p-5 transition-all duration-300 hover:bg-primary hover:text-secondary sm:p-8"
                 >
                   <AmenityIcon
                     icon={amenity.icon}
@@ -130,7 +164,7 @@ export default function VenueAbout({ venue }: VenueAboutProps) {
               ["Parking", "WiFi", "Lighting", "Seating"].map((name, idx) => (
                 <div
                   key={idx}
-                  className="group p-8 border border-primary/10 bg-primary/5 hover:bg-primary hover:text-secondary transition-all duration-300 rounded-sm"
+                  className="group rounded-sm border border-primary/10 bg-primary/5 p-5 transition-all duration-300 hover:bg-primary hover:text-secondary sm:p-8"
                 >
                   <AmenityIcon
                     icon={
