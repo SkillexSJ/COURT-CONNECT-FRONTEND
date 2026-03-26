@@ -36,9 +36,12 @@ const announcementQueryKeys = {
     [...announcementEntityKeys.all, "venue", courtId, params ?? {}] as const,
 };
 
+const reviewsEntityKeys = createEntityQueryKeys<any>("reviews");
+
 export const queryKeys = {
   courts: courtsQueryKeys,
   organizer: organizerQueryKeys,
   schedule: scheduleQueryKeys,
   announcements: announcementQueryKeys,
+  reviews: reviewsEntityKeys,
 };

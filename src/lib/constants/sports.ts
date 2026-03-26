@@ -5,6 +5,7 @@ export const SPORT_TYPES = [
   "Padel",
   "Badminton",
   "Futsal",
+  "Clay Court",
 ] as const;
 
 export type SportType = (typeof SPORT_TYPES)[number];
