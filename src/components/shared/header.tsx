@@ -81,6 +81,14 @@ export function Header({ initialSession }: HeaderProps) {
     router.refresh();
   };
 
+  // for logical routing
+  const profileHref =
+    session?.user.role === "ADMIN"
+      ? "/admin/profile"
+      : session?.user.role === "ORGANIZER"
+        ? "/organizer/settings"
+        : "/dashboard/profile";
+
   return (
     <header
       className={cn(
@@ -188,7 +196,7 @@ export function Header({ initialSession }: HeaderProps) {
                   className="rounded-lg focus:bg-accent focus:text-foreground cursor-pointer"
                 >
                   <Link
-                    href="/profile"
+                    href={profileHref}
                     className="w-full flex items-center gap-2"
                   >
                     <User className="h-4 w-4" />

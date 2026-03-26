@@ -76,6 +76,14 @@ export function MobileNav({
     setOpen(false);
   };
 
+  // for logical routing
+  const profileHref =
+    (resolvedSession as Session | null)?.user.role === "ADMIN"
+      ? "/admin/profile"
+      : (resolvedSession as Session | null)?.user.role === "ORGANIZER"
+        ? "/organizer/settings"
+        : "/dashboard/profile";
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-2 lg:hidden">
@@ -171,7 +179,7 @@ export function MobileNav({
               </Link>
 
               <Link
-                href="/profile"
+                href={profileHref}
                 onClick={() => setOpen(false)}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
