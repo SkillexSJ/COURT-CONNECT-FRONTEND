@@ -310,8 +310,8 @@ export default function HowItWorks({
           marginTop: "4px",
         }}
       ></div>
-      <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r z-0"></div>
-      <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l z-0"></div>
+      <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-linear-to-r z-0"></div>
+      <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-linear-to-l z-0"></div>
 
       <div className=" flex w-full flex-col gap-10 md:gap-16 lg:gap-20 relative z-10">
         <div className="text-center lg:text-left z-20 md:px-12">
@@ -329,7 +329,7 @@ export default function HowItWorks({
         </div>
 
         <div
-          className="relative w-full max-w-[1000px] mx-auto flex flex-col space-y-8 md:space-y-0 md:block h-auto md:h-[var(--md-height)]"
+          className="relative w-full max-w-[1000px] mx-auto flex flex-col space-y-8 md:space-y-0 md:block h-auto md:h-(--md-height)"
           style={{ "--md-height": `${height}px` } as React.CSSProperties}
         >
           {data.length > 1 && (
