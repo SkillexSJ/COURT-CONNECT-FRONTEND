@@ -34,7 +34,7 @@ export function AboutHero() {
           </Link>
           <Link
             href="/organizers"
-            className="inline-flex items-center justify-center gap-2 border-2 border-primary text-primary px-6 py-3.5 font-bold uppercase text-sm tracking-[0.12em] hover:bg-primary/5 transition-colors"
+            className="inline-flex items-center justify-center gap-2 border-2 border-primary text-primary px-6 py-2.5 font-bold uppercase text-sm tracking-[0.12em] hover:bg-primary/5 transition-colors"
           >
             Browse Organizers
           </Link>

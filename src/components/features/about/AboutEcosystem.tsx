@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function AboutEcosystem() {
   return (
-    <section className="pt-14 max-w-6xl mx-auto sm:pt-16 lg:pt-18 pb-0 px-4 sm:px-6 lg:px-8 bg-primary border-b-4 border-primary overflow-hidden">
+    <section className="pt-14 max-w-7xl min-h-fit my-15 mx-auto sm:pt-16 lg:pt-12 pb-0 px-4 sm:px-6 lg:px-8 bg-primary  overflow-hidden">
       <div className="max-w-360 mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Left Content */}
@@ -15,7 +15,8 @@ export function AboutEcosystem() {
               </p>
               <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white leading-[0.98]">
                 SKILL
-                <br className="hidden sm:block" /> BRIDGE<span className="text-secondary">.</span>
+                <br className="hidden sm:block" /> BRIDGE
+                <span className="text-secondary">.</span>
               </h2>
             </div>
 

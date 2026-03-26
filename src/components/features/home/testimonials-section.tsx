@@ -22,7 +22,7 @@ import {
 
 export function TestimonialsMarqueeDemo2() {
   return (
-    <section className="bg-surface py-20 md:py-24 lg:py-28">
+    <section className="bg-background py-20 md:py-24 lg:py-28">
       <div className="mx-auto w-full  px-6 md:px-10 lg:px-12">
         <div className="mb-12 text-center md:mb-14 lg:mb-16 lg:text-left">
           <h2 className="font-display text-4xl font-black uppercase leading-[0.9] tracking-tight text-primary sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
@@ -39,35 +39,35 @@ export function TestimonialsMarqueeDemo2() {
         </div>
       </div>
 
-      <div className="w-full space-y-4 overflow-hidden border-y border-primary/15 bg-surface-container-low/55 [&_.rfm-initial-child-container]:items-stretch! [&_.rfm-marquee]:items-stretch!">
+      <div className="relative w-full space-y-4 overflow-hidden border-y border-primary/15 bg-muted/10 [&_.rfm-initial-child-container]:items-stretch! [&_.rfm-marquee]:items-stretch!">
         {[TESTIMONIALS_1, TESTIMONIALS_2].map((list, index) => (
           <Marquee
             key={index}
-            className="border-y border-primary/15 bg-surface-container-lowest/45"
+            className="border-y border-primary/15 bg-muted/5"
           >
             <MarqueeFade
               side="left"
-              className="from-surface via-surface/95 to-transparent"
+              className="from-background via-background/95 to-transparent w-24 sm:w-32 z-30"
             />
             <MarqueeFade
               side="right"
-              className="from-surface via-surface/95 to-transparent"
+              className="from-background via-background/95 to-transparent w-24 sm:w-32 z-30"
             />
 
             <MarqueeContent direction={index % 2 === 1 ? "right" : "left"}>
               {list.map((item, i) => (
                 <MarqueeItem
                   key={i}
-                  className="mx-0 h-full w-xs border-r border-primary/15"
+                  className="mx-0 h-full w-xs border-r border-secondary"
                 >
                   <a
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block h-full transition-colors duration-300 hover:bg-primary/5"
+                    className="block h-full transition-colors duration-300 hover:bg-primary"
                   >
-                    <Testimonial className="h-full border-l-2 border-transparent transition-colors duration-300 hover:border-l-secondary/85">
-                      <TestimonialQuote className="px-5 py-4 text-sm leading-relaxed text-on-surface italic md:text-base">
+                    <Testimonial className="h-full border-l-2 hover:text-secondary  border-transparent transition-colors duration-300 hover:border-l-secondary/85">
+                      <TestimonialQuote className="px-5 py-4  text-sm leading-relaxed text-on-surface italic md:text-base">
                         <p>{item.quote}</p>
                       </TestimonialQuote>
 
@@ -77,9 +77,9 @@ export function TestimonialsMarqueeDemo2() {
                           <TestimonialAvatarRing className="ring-primary/25" />
                         </TestimonialAvatar>
 
-                        <TestimonialAuthorName className="text-sm font-black uppercase tracking-[0.08em] text-primary">
+                        <TestimonialAuthorName className="text-sm   font-black uppercase tracking-[0.08em] text-primary">
                           {item.authorName}
-                          <TestimonialVerifiedBadge className="text-secondary" />
+                          <TestimonialVerifiedBadge className="text-primary" />
                         </TestimonialAuthorName>
 
                         <TestimonialAuthorTagline className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary/65">

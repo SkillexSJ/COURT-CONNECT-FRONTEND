@@ -12,7 +12,7 @@ export function AboutMissionVision() {
               <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary mb-3">
                 Our Mission
               </p>
-              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-primary-foreground leading-[1.1]">
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black uppercase tracking-tight text-primary-foreground leading-[1.1]">
                 Make Elite Venues
                 <br />
                 <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">
@@ -29,7 +29,7 @@ export function AboutMissionVision() {
 
             <div className="space-y-4 pt-4">
               <div className="flex gap-4">
-                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center shrink-0">
                   <Target className="h-6 w-6 text-secondary" />
                 </div>
                 <div>
@@ -42,7 +42,7 @@ export function AboutMissionVision() {
                 </div>
               </div>
               <div className="flex gap-4">
-                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center shrink-0">
                   <Users className="h-6 w-6 text-secondary" />
                 </div>
                 <div>
@@ -56,7 +56,7 @@ export function AboutMissionVision() {
                 </div>
               </div>
               <div className="flex gap-4">
-                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                <div className="h-12 w-12 rounded-lg bg-secondary/20 flex items-center justify-center shrink-0">
                   <Zap className="h-6 w-6 text-secondary" />
                 </div>
                 <div>
@@ -77,7 +77,7 @@ export function AboutMissionVision() {
               <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary mb-3">
                 Our Vision
               </p>
-              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-primary-foreground leading-[1.1]">
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black uppercase tracking-tight text-primary-foreground leading-[1.1]">
                 Global Sports
                 <br />
                 <span className="mt-1 inline-block bg-secondary px-3 py-1 text-primary">

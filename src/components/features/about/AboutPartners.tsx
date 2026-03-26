@@ -48,14 +48,14 @@ export function AboutPartners() {
         </div>
 
         {/* Partnership CTA */}
-        <div className="border-t border-primary-foreground/20 pt-12">
+        <div className="border-t border-primary-foreground/20">
           <p className="text-sm text-secondary-foreground/80 text-center mb-6">
             Are you a brand or venue operator interested in partnering with us?
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="mailto:partners@courtconnect.com"
-              className="inline-flex w-1/5 items-center justify-center bg-secondary text-secondary-foreground px-6 py-3 font-bold uppercase text-xs tracking-[0.12em] hover:bg-secondary/90 transition-colors"
+              className="inline-flex w-1/3 mx-auto items-center justify-center bg-secondary text-secondary-foreground px-6 py-3 font-bold uppercase text-xs tracking-[0.12em] hover:bg-secondary/90 transition-colors"
             >
               Get in Touch
             </Link>

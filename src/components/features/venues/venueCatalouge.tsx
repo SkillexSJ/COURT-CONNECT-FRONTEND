@@ -257,7 +257,7 @@ export function VenueCatalog({
   };
 
   return (
-    <section className="mx-auto w-full max-w-350 px-4 pb-16 pt-24 sm:px-6 lg:px-8">
+    <section className="mx-auto mb-10 w-full max-w-350 mt-10 lg:mt-10 px-4 pb-16 pt-24 sm:px-6 lg:px-8">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black uppercase tracking-tight text-foreground sm:text-5xl">

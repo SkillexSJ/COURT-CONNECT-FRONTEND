@@ -27,7 +27,7 @@ const socialLinks = ["IG", "TW", "LI", "YT"];
 
 export function Footer() {
   return (
-    <footer className="w-full border-t border-sidebar-border/70 bg-sidebar text-sidebar-foreground">
+    <footer className=" w-full md:max-w-7xl md:mb-10 md:rounded-4xl md:mx-auto border-t border-sidebar-border/70 bg-sidebar text-sidebar-foreground">
       <div className="mx-auto w-full max-w-350 px-6 pb-8 pt-14 sm:px-8 lg:px-12 lg:pt-18">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <div className="space-y-5">
@@ -48,9 +48,9 @@ export function Footer() {
               <span className="block">Connect</span>
             </h2>
 
-            <div className="inline-flex items-center gap-2 border border-sidebar-border bg-sidebar-accent/60 px-3 py-2">
+            <div className="md:inline-flex items-center gap-2 border border-sidebar-border bg-sidebar-accent/60 px-3 py-2">
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-sidebar-primary">
-                Member of the Elite Arena Network
+                Member of the SKILLEX Network
               </p>
             </div>
           </div>

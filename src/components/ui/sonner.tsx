@@ -90,11 +90,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            "cn-toast border border-white/20 bg-transparent text-current shadow-md backdrop-blur",
-          description: "text-current/85",
+            "cn-toast border border-white/20 bg-transparent text-current shadow-md backdrop-blur font-sans",
+          title: "font-heading font-bold uppercase tracking-wide text-[13px]",
+          description: "text-current/85 font-sans font-medium",
           actionButton:
-            "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-          cancelButton: "bg-white/12 text-primary-foreground hover:bg-white/20",
+            "bg-secondary text-secondary-foreground font-heading uppercase text-xs hover:bg-secondary/90",
+          cancelButton: "bg-white/12 text-primary-foreground font-heading uppercase text-xs hover:bg-white/20",
         },
       }}
       {...props}

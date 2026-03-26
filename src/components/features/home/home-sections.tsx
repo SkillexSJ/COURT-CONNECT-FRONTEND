@@ -1,3 +1,4 @@
+import HowItWorks from "@/components/how-it-works";
 import { AnnouncementSection } from "./announcement-section";
 import { FeaturedSpotlightSection } from "./featured-spotlight-section";
 import { GlobalPresenceSection } from "./global-presence-section";
@@ -7,6 +8,7 @@ import { HowItWorksSection } from "./how-it-works-section";
 import { OrganizerCtaSection } from "./organizer-cta-section";
 import { TestimonialsSection } from "./testimonials-section";
 import { TrendingVenuesSection } from "./trending-venues-section";
+import { DiscountSection } from "./discount-section";
 
 export function HomeSections() {
   return (
@@ -18,19 +20,23 @@ export function HomeSections() {
 
       <div className="pt-10 md:pt-14 lg:pt-18">
         <div className="pt-10 md:pt-14 lg:pt-16">
-          <HowItWorksSection />
+          {/* <HowItWorksSection /> */}
+          <HowItWorks />
         </div>
         <div className="pt-10 md:pt-14 lg:pt-16">
           <FeaturedSpotlightSection />
-        </div>
-        <div className="pt-10 md:pt-14 lg:pt-16">
-          <TestimonialsSection />
         </div>
         <div className="pt-10 md:pt-14 lg:pt-16">
           <TrendingVenuesSection />
         </div>
         <div className="pt-10 md:pt-14 lg:pt-16">
           <GlobalPresenceSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <TestimonialsSection />
+        </div>
+        <div className="pt-10 md:pt-14 lg:pt-16">
+          <DiscountSection />
         </div>
         <div className="pt-10 md:pt-14 lg:pt-16">
           <OrganizerCtaSection />

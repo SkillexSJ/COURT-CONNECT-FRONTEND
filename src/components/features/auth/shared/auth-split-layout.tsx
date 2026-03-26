@@ -26,9 +26,9 @@ export function AuthSplitLayout({ children }: AuthSplitLayoutProps) {
           <div className="flex items-center ">
             <Link
               href={"/"}
-              className="font-heading text-2xl font-black tracking-tighter text-secondary mb-10 uppercase md:text-3xl lg:text-[2rem]"
+              className="font-heading text-2xl text-white font-black tracking-tighter mb-10 uppercase md:text-3xl lg:text-[2rem]"
             >
-              COURT CONNECT
+              <span className="text-secondary">COURT</span> CONNECT
             </Link>
           </div>
 

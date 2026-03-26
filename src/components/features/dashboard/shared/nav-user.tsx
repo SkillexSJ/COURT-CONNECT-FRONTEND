@@ -20,7 +20,7 @@ export function NavUser({
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }) {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <button className="flex w-full items-center gap-2 rounded-md border border-sidebar-accent bg-sidebar px-2.5 py-2 text-left hover:bg-sidebar-accent transition-colors">
               <Avatar className="h-8 w-8 rounded-md border border-sidebar-accent">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user.avatar || ""} alt={user.name} />
                 <AvatarFallback className="rounded-md bg-sidebar-accent text-sidebar-foreground">
                   {user.name?.charAt(0).toUpperCase() || "U"}
                 </AvatarFallback>
@@ -47,7 +47,7 @@ export function NavUser({
                 <p className="truncate text-sm font-semibold text-sidebar-foreground">
                   {user.name}
                 </p>
-                <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="truncate text-[10px] uppercase tracking-[0.14em] text-sidebar-foreground/70">
                   {user.email}
                 </p>
               </div>
@@ -57,13 +57,13 @@ export function NavUser({
             align="end"
             className="w-56 rounded-md border border-sidebar-accent bg-sidebar shadow-lg"
           >
-            <DropdownMenuItem className="flex items-center gap-2 rounded-sm px-2 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-primary cursor-pointer">
+            <DropdownMenuItem className="flex items-center gap-2 rounded-sm px-2 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer">
               <IconSettings className="size-4" />
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleLogout}
-              className="flex items-center gap-2 rounded-sm px-2 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-primary cursor-pointer"
+              className="flex items-center gap-2 rounded-sm px-2 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
             >
               <IconLogout className="size-4" />
               <span>Log out</span>

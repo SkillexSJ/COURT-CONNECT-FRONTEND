@@ -7,19 +7,17 @@ import {
   AboutTeam,
   AboutWhyChoose,
 } from "@/components/features/about";
-import React from "react";
 
 const AboutPage = () => {
   return (
-    <main className="bg-background">
+    <main className="bg-background w-full overflow-x-clip">
       <AboutHero />
       <AboutMissionVision />
       <AboutWhyChoose />
-  
+
       <AboutEcosystem />
       <AboutTeam />
       <AboutPartners />
-     
     </main>
   );
 };
