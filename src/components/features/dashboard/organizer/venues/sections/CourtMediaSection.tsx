@@ -33,7 +33,9 @@ export function CourtMediaSection({
                 src={primaryPreview}
                 alt="Primary preview"
                 fill
+                loading="eager"
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 40vw"
               />
             ) : (
               <div className="flex flex-col items-center gap-2 text-muted-foreground">
