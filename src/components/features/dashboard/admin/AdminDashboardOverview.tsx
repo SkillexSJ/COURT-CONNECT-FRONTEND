@@ -1,0 +1,202 @@
+"use client";
+
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
+import { useQuery } from "@tanstack/react-query";
+import { ShieldAlert, UserCheck, Users } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
+import { adminService } from "@/service/admin.service";
+import { courtService } from "@/service/court.service";
+import { useApproveCourtMutation } from "@/hooks/queries/use-court-mutation";
+import { toast } from "sonner";
+
+// FOR DYNAMIC IMPORT
+const AdminDashboardCharts = dynamic(
+  () =>
+    import("./AdminDashboardCharts").then((mod) => mod.AdminDashboardCharts),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
+        <div className="h-84 animate-pulse rounded-none border border-border bg-card" />
+        <div className="h-84 animate-pulse rounded-none border border-border bg-card" />
+      </div>
+    ),
+  },
+);
+
+export default function AdminDashboardOverview() {
+  const approveMutation = useApproveCourtMutation();
+
+  // QUERIES FOR ADMIN DASHBOARD
+  const usersQuery = useQuery({
+    queryKey: ["admin-dashboard-users"],
+    queryFn: () => adminService.getUsers({ limit: 200, sortBy: "-createdAt" }),
+    staleTime: 30_000,
+  });
+  // QUERY FOR PENDING COURTS
+  const pendingCourtsQuery = useQuery({
+    queryKey: ["admin-dashboard-pending-courts"],
+    queryFn: () => courtService.getPendingCourtsForAdmin({ limit: 50 }),
+    staleTime: 30_000,
+  });
+
+  // MEMOIZED USERS
+  const users = useMemo(
+    () => usersQuery.data?.data ?? [],
+    [usersQuery.data?.data],
+  );
+  // MEMOIZED PENDING COURTS
+  const pendingCourts = useMemo(
+    () => pendingCourtsQuery.data?.data ?? [],
+    [pendingCourtsQuery.data?.data],
+  );
+
+  // MEMOIZED ORGANIZER USERS
+  const organizerUsers = users.filter((user) => user.role === "ORGANIZER");
+  const approvedOrganizers = organizerUsers.filter(
+    (user) => user.isApproved,
+  ).length;
+  const totalUsers = users.length;
+  const totalOrganizers = organizerUsers.length;
+  const pendingVerifications = pendingCourts.length;
+
+  const approvalPercent =
+    totalOrganizers === 0
+      ? 0
+      : Math.round((approvedOrganizers / totalOrganizers) * 100);
+
+  // MEMOIZED MONTHLY REGISTRATIONS
+  const monthlyRegistrations = useMemo(() => {
+    const monthMap = new Map<string, number>();
+
+    for (const user of users) {
+      const monthLabel = new Date(user.createdAt).toLocaleString("en-US", {
+        month: "short",
+      });
+      monthMap.set(monthLabel, (monthMap.get(monthLabel) ?? 0) + 1);
+    }
+
+    return Array.from(monthMap.entries()).map(([month, count]) => ({
+      month,
+      registrations: count,
+    }));
+  }, [users]);
+
+  return (
+    <div className="space-y-6">
+      <header className="space-y-2">
+        <h1 className="font-heading text-4xl font-black uppercase tracking-tight text-primary md:text-5xl">
+          Management Overview
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Platform insights and verification operations across users and venues.
+        </p>
+      </header>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+        <DashboardStatCard
+          label="Total Users"
+          value={String(totalUsers)}
+          icon={Users}
+          subtitle="Registered platform accounts"
+        />
+        <DashboardStatCard
+          label="Total Organizers"
+          value={String(totalOrganizers)}
+          icon={UserCheck}
+          subtitle={`${approvedOrganizers} approved organizers`}
+        />
+        <DashboardStatCard
+          label="Pending Verifications"
+          value={String(pendingVerifications)}
+          icon={ShieldAlert}
+          subtitle="Venue approvals awaiting review"
+          className="col-span-2 md:col-span-1"
+          accent
+        />
+      </div>
+
+      <AdminDashboardCharts
+        monthlyRegistrations={monthlyRegistrations}
+        approvalPercent={approvalPercent}
+      />
+
+      <Card className="rounded-none border border-border bg-card">
+        <CardHeader>
+          <CardTitle className="font-heading text-lg font-black uppercase tracking-tight text-primary">
+            Pending Venue Verifications
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table className="min-w-155">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Venue</TableHead>
+                  <TableHead>Organizer</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingCourts.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="text-center text-muted-foreground"
+                    >
+                      No pending venue verification requests.
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {pendingCourts.slice(0, 6).map((court) => (
+                  <TableRow key={court.id}>
+                    <TableCell>{court.name}</TableCell>
+                    <TableCell>
+                      {court.organizer?.user?.name ?? "N/A"}
+                    </TableCell>
+                    <TableCell>{court.locationLabel}</TableCell>
+                    <TableCell>
+                      {new Date(court.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        onClick={() => {
+                          const approvePromise = approveMutation.mutateAsync(
+                            court.id,
+                          );
+                          toast.promise(approvePromise, {
+                            loading: `Approving ${court.name}...`,
+                            success: `${court.name} approved successfully`,
+                            error: "Failed to approve venue",
+                          });
+                        }}
+                        disabled={approveMutation.isPending}
+                        className="rounded-sm bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary transition-colors hover:bg-primary/90 disabled:opacity-50"
+                      >
+                        Approve
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
