@@ -38,6 +38,7 @@ export type PublicOrganizer = {
   bio: string | null;
   website: string | null;
   address: string | null;
+  phoneNumber: string | null;
   isVerified: boolean;
   createdAt: string;
   user: {

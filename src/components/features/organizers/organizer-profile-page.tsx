@@ -100,7 +100,6 @@ export default function OrganizerProfilePage() {
             src={heroImage}
             alt={organizerName}
             fill
-            
             loading="eager"
             className="object-cover"
             sizes="100vw"
@@ -110,13 +109,13 @@ export default function OrganizerProfilePage() {
 
           <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
             <div className="flex flex-wrap items-end gap-4">
-              <div className="inline-flex h-16 w-16 items-center justify-center border-2 border-secondary bg-primary text-lg font-black text-secondary sm:h-20 sm:w-20 sm:text-xl">
+              <div className=" hidden md:inline-flex h-16 w-16 items-center justify-center border-2 border-secondary bg-primary text-lg font-black text-secondary sm:h-20 sm:w-20 sm:text-xl">
                 {getInitials(organizerName)}
               </div>
 
               <div className="min-w-0 flex-1 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="truncate font-heading text-3xl font-black uppercase tracking-tight sm:text-5xl">
+                  <h1 className="font-heading text-2xl font-black uppercase tracking-tight sm:text-5xl">
                     {organizerName}
                   </h1>
                   <span
@@ -177,7 +176,17 @@ export default function OrganizerProfilePage() {
                 {getInitials(organizer.user?.name || organizerName)}
               </AvatarFallback>
             </Avatar>
-            Contact: {organizer.user?.name || "Organizer Team"}
+            Contact:{" "}
+            {organizer.phoneNumber ? (
+              <a
+                href={`tel:${organizer.phoneNumber}`}
+                className="truncate underline decoration-secondary/50 underline-offset-4 hover:text-secondary"
+              >
+                {organizer.phoneNumber}
+              </a>
+            ) : (
+              organizer.user?.name || "Organizer Team"
+            )}
           </div>
         </div>
       </header>
