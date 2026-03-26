@@ -30,11 +30,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user?: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }
 
-const normalizeRole = (role: UserRole | LegacyUserRole): UserRole => {
+const normalizeRole = (role?: UserRole | LegacyUserRole | null): UserRole => {
+  if (!role) return "USER";
   if (role === "user") return "USER";
   if (role === "organizer") return "ORGANIZER";
   if (role === "admin") return "ADMIN";
@@ -42,21 +43,24 @@ const normalizeRole = (role: UserRole | LegacyUserRole): UserRole => {
 };
 
 export function AppSidebar({
-  role = "ORGANIZER",
+  role = "USER",
   user = defaultUser,
+  className,
   ...props
 }: AppSidebarProps) {
-  const config = dashboardConfig[normalizeRole(role)];
+  const normalizedRole = normalizeRole(role);
+  const config = dashboardConfig[normalizedRole];
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar
+      collapsible="offcanvas"
+      className={cn("bg-sidebar text-sidebar-foreground", className)}
+      {...props}
+    >
       <SidebarHeader className="px-4 pt-5 pb-4">
-        <Link href="/" className="block rounded-md px-2 py-1.5">
-          <p className="font-heading text-lg font-black tracking-tight text-primary uppercase">
-            Elite Arena
-          </p>
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            Venue Manager
+        <Link href="/" className="block">
+          <p className="font-heading text-center text-lg font-black tracking-tight text-sidebar-foreground uppercase">
+            <span className="text-secondary">COURT</span> CONNECT
           </p>
         </Link>
       </SidebarHeader>
@@ -66,17 +70,19 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter className="gap-3 px-2 pb-4">
-        <Link
-          href="/organizer/bookings/new"
-          className={cn(
-            buttonVariants(),
-            "h-11 w-full justify-center rounded-md bg-secondary text-secondary-foreground font-heading text-xs font-black uppercase tracking-[0.12em] hover:opacity-95",
-          )}
-        >
-          <IconPlus className="mr-1.5 size-4" />
-          New Booking
-        </Link>
-        <NavUser user={user} />
+        {normalizedRole === "USER" && (
+          <Link
+            href="/dashboard/become-organizer"
+            className={cn(
+              buttonVariants(),
+              "h-11 w-full justify-center rounded-md bg-secondary text-secondary-foreground font-heading text-xs font-black uppercase tracking-[0.12em] hover:opacity-95",
+            )}
+          >
+            <IconPlus className="mr-1.5 size-4" />
+            Become an Organizer
+          </Link>
+        )}
+        <NavUser user={{ ...user, avatar: user.avatar ?? "" }} />
       </SidebarFooter>
     </Sidebar>
   );
