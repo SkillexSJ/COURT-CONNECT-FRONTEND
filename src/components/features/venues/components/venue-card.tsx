@@ -45,6 +45,7 @@ export function VenueCard({ court }: VenueCardProps) {
             src={imageUrl}
             alt={court.name}
             fill
+            loading="eager"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
