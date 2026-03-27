@@ -2,28 +2,35 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
-const navigationLinks = [
-  "Find a Venue",
-  "Member Perks",
-  "The Journal",
-  "Athletic Labs",
+type LinkItem = { label: string; href: string };
+
+const navigationLinks: LinkItem[] = [
+  { label: "About", href: "/about" },
+  { label: "Organizers", href: "/organizers" },
+  { label: "Venues", href: "/venues" },
+  { label: "Member Perks", href: "/" },
 ];
 
-const supportLinks = [
-  "Global Concierge",
-  "Booking FAQ",
-  "Safety Protocols",
-  "Account Access",
+const supportLinks: LinkItem[] = [
+  { label: "Global Concierge", href: "/" },
+  { label: "Booking FAQ", href: "/" },
+  { label: "Safety Protocols", href: "/" },
+  { label: "Account Access", href: "/" },
 ];
 
-const communityLinks = [
-  "Athlete Forum",
-  "Partner with Us",
-  "Founders Circle",
-  "Press Inquiries",
+const communityLinks: LinkItem[] = [
+  { label: "Athlete Forum", href: "/forum" },
+  { label: "Partner with Us", href: "/dashboard/become-organizer" },
+  { label: "Founders Circle", href: "/founders" },
+  { label: "Press Inquiries", href: "/press" },
 ];
 
-const socialLinks = ["IG", "TW", "LI", "YT"];
+const socialLinks: LinkItem[] = [
+  { label: "IG", href: "/" },
+  { label: "TW", href: "/" },
+  { label: "LI", href: "/" },
+  { label: "YT", href: "/" },
+];
 
 export function Footer() {
   return (
@@ -98,11 +105,11 @@ export function Footer() {
             <div className="flex flex-wrap gap-2">
               {socialLinks.map((item) => (
                 <Link
-                  key={item}
-                  href="/"
+                  key={item.label}
+                  href={item.href}
                   className="inline-flex h-10 min-w-10 items-center justify-center border border-sidebar-border bg-sidebar-accent/60 px-3 text-xs font-bold uppercase tracking-[0.12em] text-sidebar-foreground transition-colors hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
                 >
-                  {item}
+                  {item.label}
                 </Link>
               ))}
             </div>
@@ -114,13 +121,13 @@ export function Footer() {
         <div className="flex flex-col gap-4 text-[10px] uppercase tracking-[0.16em] text-sidebar-foreground/55 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Court Connect Network. Built for players.</p>
           <div className="flex flex-wrap gap-5">
-            <Link href="/" className="hover:text-sidebar-primary">
+            <Link href="/privacy" className="hover:text-sidebar-primary">
               Privacy Charter
             </Link>
-            <Link href="/" className="hover:text-sidebar-primary">
+            <Link href="/terms" className="hover:text-sidebar-primary">
               Terms of Presence
             </Link>
-            <Link href="/" className="hover:text-sidebar-primary">
+            <Link href="/cookies" className="hover:text-sidebar-primary">
               Cookie Integrity
             </Link>
           </div>
@@ -130,7 +137,7 @@ export function Footer() {
   );
 }
 
-function FooterColumn({ title, items }: { title: string; items: string[] }) {
+function FooterColumn({ title, items }: { title: string; items: LinkItem[] }) {
   return (
     <div className="space-y-4">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-primary">
@@ -138,12 +145,12 @@ function FooterColumn({ title, items }: { title: string; items: string[] }) {
       </p>
       <ul className="space-y-3">
         {items.map((item) => (
-          <li key={item}>
+          <li key={item.label}>
             <Link
-              href="/"
+              href={item.href}
               className="text-xs font-semibold uppercase tracking-widest text-sidebar-foreground transition-colors hover:text-sidebar-primary"
             >
-              {item}
+              {item.label}
             </Link>
           </li>
         ))}
