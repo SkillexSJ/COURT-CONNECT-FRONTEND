@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="public/cover.png" alt="Court Connect Cover" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);" />
+  <img src="public/Cover.png" alt="Court Connect Cover" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);" />
 
   <br />
   <br />
