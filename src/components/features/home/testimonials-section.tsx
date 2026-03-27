@@ -60,10 +60,7 @@ export function TestimonialsMarqueeDemo2() {
                   key={i}
                   className="mx-0 h-full w-xs border-r border-secondary"
                 >
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     className="block h-full transition-colors duration-300 hover:bg-primary"
                   >
                     <Testimonial className="h-full border-l-2 hover:text-secondary  border-transparent transition-colors duration-300 hover:border-l-secondary/85">
@@ -87,7 +84,7 @@ export function TestimonialsMarqueeDemo2() {
                         </TestimonialAuthorTagline>
                       </TestimonialAuthor>
                     </Testimonial>
-                  </a>
+                  </div>
                 </MarqueeItem>
               ))}
             </MarqueeContent>
