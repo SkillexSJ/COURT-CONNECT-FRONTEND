@@ -34,7 +34,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const htmlClassName = [
-    "h-full",
     "antialiased",
     manrope.variable,
     lexend.variable,
@@ -44,7 +43,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={htmlClassName} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <QueryProvider>
           <Toaster position="top-left" />
           {children}
