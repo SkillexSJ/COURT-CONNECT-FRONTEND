@@ -3,11 +3,23 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
-import { CheckCircle2, Clock3, ReceiptText, AlertCircle } from "lucide-react";
+import { CheckCircle2, Clock3, ReceiptText, AlertCircle, CreditCard, XCircle } from "lucide-react";
 import { BookingService } from "@/service/booking.service";
 import { Booking } from "@/types/booking.types";
 import Loading from "@/app/loading";
 import { toast } from "sonner";
+import QRCode from "react-qr-code";
+
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const getStatusLabel = (status?: Booking["status"]) => {
   if (status === "PAID") return "Payment Confirmed";
@@ -69,31 +81,51 @@ function SuccessContent() {
     );
   }
 
+  const isPaid = booking.status === "PAID" || booking.status === "COMPLETED";
+  const isCancelled = booking.status === "CANCELLED";
+  const isPending = booking.status === "PENDING";
+
   return (
-    <main className="w-full max-w-6xl mx-auto mt-10 bg-background py-8 sm:py-10 lg:py-14">
+    <main className="mx-auto mt-10 w-full max-w-6xl bg-background py-8 sm:py-10 lg:py-14">
       <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-sm border border-border bg-card shadow-md">
           <div className="bg-primary px-5 py-8 text-primary-foreground sm:px-8 sm:py-10">
             <div className="flex flex-col items-center gap-5 text-center">
               <div className="rounded-full border border-primary-foreground/30 bg-primary-foreground/10 p-3">
-                <CheckCircle2 className="h-10 w-10 text-secondary" />
+                {isPaid ? (
+                  <CheckCircle2 className="h-10 w-10 text-secondary" />
+                ) : isCancelled ? (
+                  <XCircle className="h-10 w-10 text-destructive" />
+                ) : (
+                  <Clock3 className="h-10 w-10 text-amber-400" />
+                )}
               </div>
 
               <div className="space-y-2">
-                <h1 className="font-heading text-3xl font-black uppercase tracking-tight sm:text-4xl">
-                  Payment Successful!
+                <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+                  {isPaid
+                    ? "Payment Successful!"
+                    : isCancelled
+                      ? "Booking Cancelled"
+                      : "Payment Pending!"}
                 </h1>
                 <p className="mx-auto max-w-xl text-sm text-primary-foreground/80 sm:text-base">
-                  Your booking has been confirmed and payment is completed.
+                  {isPaid
+                    ? "Your booking has been confirmed and payment is completed."
+                    : isCancelled
+                      ? "This booking has been cancelled and is no longer valid."
+                      : "Your booking is reserved, but payment has not been completed yet."}
                 </p>
               </div>
 
-              <div className="grid w-full max-w-2xl grid-cols-1 gap-3 text-left sm:grid-cols-3">
+              <div className="mt-4 grid w-full max-w-2xl grid-cols-1 gap-3 text-left sm:grid-cols-3">
                 <div className="rounded-sm border border-primary-foreground/20 bg-primary-foreground/8 px-3 py-2">
                   <p className="text-[10px] uppercase tracking-[0.16em] text-primary-foreground/70">
                     Status
                   </p>
-                  <p className="mt-1 font-heading text-base font-black text-secondary">
+                  <p
+                    className={`mt-1 font-heading text-base font-black ${isPaid ? "text-secondary" : isCancelled ? "text-destructive" : "text-amber-400"}`}
+                  >
                     {getStatusLabel(booking?.status)}
                   </p>
                 </div>
@@ -110,12 +142,75 @@ function SuccessContent() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:px-8 sm:py-8 lg:grid-cols-[1fr_2fr]">
-            <div className="rounded-sm h-fit border border-secondary/40 bg-secondary/15 p-4">
-              <p className="text-sm text-primary">
-                <span className="font-bold">Note:</span> Your booking is now
-                confirmed. Any older pending bookings from previous attempts
-                will auto-expire after 24 hours.
-              </p>
+            <div className="flex flex-col gap-4">
+              {isPaid && booking && (
+                <div className="flex w-full flex-col items-center gap-3 rounded-sm border border-border bg-card p-5 shadow-sm">
+                  <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
+                    Your Digital Ticket
+                  </p>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="flex w-full items-center justify-center gap-2 rounded-sm bg-primary px-6 py-3 font-heading text-sm font-black uppercase tracking-widest text-primary-foreground transition-all hover:scale-[1.02] hover:bg-primary/90 sm:w-fit">
+                        <ReceiptText className="h-4 w-4" />
+                        Show QR Code
+                      </button>
+                    </AlertDialogTrigger>
+                    
+                    <AlertDialogContent className="flex w-[90%] max-w-sm flex-col items-center rounded-sm border-2 border-primary bg-background p-6 sm:p-8">
+                      <AlertDialogHeader className="w-full space-y-2 text-center">
+                        <AlertDialogTitle className="w-full text-center font-heading text-2xl font-black uppercase tracking-tight text-primary">
+                          Entry Ticket
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="w-full text-center text-sm text-muted-foreground">
+                          Please present this QR code to the organizer or host when entering the court.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      
+                      <div className="my-6 flex w-fit flex-col items-center gap-2 rounded-md border border-border bg-white p-4 shadow-inner">
+                        <QRCode
+                          value={booking.id}
+                          size={220}
+                          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                          viewBox={`0 0 220 220`}
+                        />
+                      </div>
+                      
+                      <AlertDialogFooter className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
+                        <AlertDialogCancel className="w-full rounded-sm border border-secondary font-heading font-bold uppercase tracking-widest text-secondary transition-colors hover:bg-secondary hover:text-white sm:w-full">
+                          Close Ticket
+                        </AlertDialogCancel>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <p className="mt-1 text-center text-[10px] uppercase text-muted-foreground">
+                    Required for entry
+                  </p>
+                </div>
+              )}
+
+              {isPaid ? (
+                <div className="h-fit rounded-sm border border-secondary/40 bg-secondary/15 p-4">
+                  <p className="text-sm text-primary">
+                    <span className="font-bold">Note:</span> Your booking is now
+                    confirmed. Any older pending bookings from previous attempts
+                    will auto-expire after 24 hours.
+                  </p>
+                </div>
+              ) : isPending ? (
+                <div className="h-fit rounded-sm border border-amber-300 bg-amber-50 p-4">
+                  <p className="text-sm text-amber-800">
+                    <span className="font-bold">Action Required:</span> You need to
+                    finish your payment to secure this reservation before it expires.
+                  </p>
+                </div>
+              ) : (
+                <div className="h-fit rounded-sm border border-destructive/40 bg-destructive/10 p-4">
+                  <p className="text-sm text-destructive">
+                    <span className="font-bold">Cancelled:</span> This booking can
+                    no longer be paid for or used.
+                  </p>
+                </div>
+              )}
             </div>
 
             {booking && (
@@ -178,7 +273,7 @@ function SuccessContent() {
                   </div>
 
                   <DetailItem
-                    label="Amount Paid"
+                    label={isPaid ? "Amount Paid" : "Amount Due"}
                     value={`USD ${Number(booking.totalAmount).toFixed(2)}`}
                     className="sm:col-span-2"
                     emphasized
@@ -189,31 +284,37 @@ function SuccessContent() {
           </div>
 
           <div className="space-y-4 border-t border-border px-5 py-6 sm:px-8 sm:py-8">
-            {booking && booking.status !== "PAID" && (
-              <div className="inline-flex items-center gap-2 rounded-none border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-bold text-amber-700">
-                <Clock3 className="h-4 w-4" />
-                Current status: {getStatusLabel(booking.status)}
-              </div>
-            )}
-
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Link
-                href="/dashboard/bookings"
-                className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                View My Bookings
-              </Link>
+              {isPending ? (
+                <Link
+                  href={`/checkout?bookingId=${booking.id}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  <CreditCard className="h-4 w-4" />
+                  Complete Payment
+                </Link>
+              ) : (
+                <Link
+                  href="/dashboard/bookings"
+                  className="inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  View My Bookings
+                </Link>
+              )}
+
               <Link
                 href="/"
-                className="inline-flex items-center justify-center rounded-sm border border-secondary bg-secondary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary transition-colors hover:bg-secondary/90"
+                className="inline-flex items-center justify-center gap-2 rounded-sm border border-secondary bg-secondary px-4 py-3 text-center font-heading text-sm font-black uppercase tracking-widest text-primary transition-colors hover:bg-secondary/90"
               >
                 Back to Home
               </Link>
             </div>
 
-            <p className="text-center text-xs text-muted-foreground">
-              A confirmation email has been sent to your registered address.
-            </p>
+            {isPaid && (
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                A confirmation email has been sent to your registered address.
+              </p>
+            )}
           </div>
         </div>
       </div>
