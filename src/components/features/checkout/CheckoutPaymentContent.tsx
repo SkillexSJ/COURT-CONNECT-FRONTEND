@@ -11,6 +11,7 @@ import type { Booking } from "@/types/booking.types";
 import { CheckoutOrderPanel } from "./CheckoutOrderPanel";
 import { CheckoutSidebarPanel } from "./CheckoutSidebarPanel";
 import Loading from "@/app/loading";
+import { Info } from "lucide-react";
 
 type CheckoutPaymentContentProps = {
   bookingId: string;
@@ -156,6 +157,16 @@ export function CheckoutPaymentContent({
           </div>
 
           <div className="space-y-3 rounded-sm border border-primary/15 bg-card p-5">
+            <div className="mb-4 flex items-start gap-3 rounded-sm border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
+              <div>
+                <p className="font-bold">Test Mode Active</p>
+                <p className="mt-1 text-blue-700">
+                  Please use the test card <span className="font-mono font-bold select-all tracking-widest">4242 4242 4242 4242</span> with any valid future date and any CVC (e.g., <span className="font-mono font-bold select-all">123</span>) to complete this demo payment.
+                </p>
+              </div>
+            </div>
+
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/55">
               Card Details
             </p>

@@ -2,9 +2,16 @@
 
 import { useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
-import { CircleDollarSign, Clock3, ShieldAlert } from "lucide-react";
+import {
+  CircleDollarSign,
+  Clock3,
+  ShieldAlert,
+  Trophy,
+  ArrowRight,
+} from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -137,6 +144,15 @@ export default function OrganizerDashboardOverview() {
         .slice(0, 6),
     [bookings],
   );
+
+  const topCourt = useMemo(() => {
+    if (courts.length === 0) return null;
+    const sorted = [...courts].sort(
+      (a, b) => (b._count?.bookings ?? 0) - (a._count?.bookings ?? 0),
+    );
+    if ((sorted[0]?._count?.bookings ?? 0) === 0) return null;
+    return sorted[0];
+  }, [courts]);
 
   // HELPERS
   const getVenueName = (booking: (typeof bookings)[number]) => {
@@ -276,10 +292,57 @@ export default function OrganizerDashboardOverview() {
           </CardContent>
         </Card>
 
-        <OrganizerDashboardCharts
-          trendData={trendData}
-          occupancyPercent={occupancyPercent}
-        />
+        <div className="flex flex-col gap-4">
+          {topCourt && (
+            <Card className="flex flex-col overflow-hidden rounded-none border border-border bg-card">
+              <div className="relative h-32 w-full bg-muted sm:h-40">
+                <Image
+                  src={
+                    topCourt.media?.find((m) => m.isPrimary)?.url ||
+                    topCourt.media?.[0]?.url ||
+                    VENUE_FALLBACK_IMAGE
+                  }
+                  alt={topCourt.name}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute left-3 top-3 flex items-center gap-1.5 bg-secondary px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-primary shadow-sm">
+                  <Trophy className="h-3.5 w-3.5" />
+                  Top Venue
+                </div>
+              </div>
+              <CardContent className="flex grow flex-col justify-between p-4">
+                <div>
+                  <h3 className="font-heading text-lg font-black uppercase tracking-tight text-primary">
+                    {topCourt.name}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {topCourt.locationLabel}
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="text-sm font-bold text-primary">
+                    {topCourt._count?.bookings ?? 0}{" "}
+                    <span className="font-normal text-muted-foreground">
+                      total bookings
+                    </span>
+                  </div>
+                  <Link
+                    href={`/venues/${topCourt.slug}`}
+                    className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-primary transition-colors hover:text-secondary hover:underline"
+                  >
+                    View <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <OrganizerDashboardCharts
+            trendData={trendData}
+            occupancyPercent={occupancyPercent}
+          />
+        </div>
       </div>
     </div>
   );
