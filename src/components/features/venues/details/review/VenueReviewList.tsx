@@ -5,9 +5,10 @@ import VenueReviewItem from "./VenueReviewItem";
 
 interface VenueReviewListProps {
   reviews: Review[];
+  hostUserId?: string;
 }
 
-export default function VenueReviewList({ reviews }: VenueReviewListProps) {
+export default function VenueReviewList({ reviews, hostUserId }: VenueReviewListProps) {
   if (reviews.length === 0) {
     return (
       <div className="py-8 text-center border-t border-primary/10 mt-8">
@@ -29,7 +30,7 @@ export default function VenueReviewList({ reviews }: VenueReviewListProps) {
 
       <div className="flex flex-col gap-2">
         {reviews.map((review) => (
-          <VenueReviewItem key={review.id} review={review} />
+          <VenueReviewItem key={review.id} review={review} hostUserId={hostUserId} />
         ))}
       </div>
     </div>

@@ -13,11 +13,13 @@ import { useCreateReviewMutation } from "@/hooks/queries/use-review-mutation";
 interface VenueReviewItemProps {
   review: Review;
   isReply?: boolean;
+  hostUserId?: string;
 }
 
 export default function VenueReviewItem({
   review,
   isReply = false,
+  hostUserId,
 }: VenueReviewItemProps) {
   // STATES
   const { data: session } = authClient.useSession();
@@ -57,7 +59,7 @@ export default function VenueReviewItem({
     .substring(0, 2)
     .toUpperCase();
 
-  const isOrganizer = review.user.role === "ORGANIZER";
+  const isHost = hostUserId && review.user.id === hostUserId;
 
   return (
     <div
@@ -80,12 +82,12 @@ export default function VenueReviewItem({
               <h4 className="font-headline font-black uppercase tracking-tight text-primary text-sm sm:text-base">
                 {review.user.name}
               </h4>
-              {isOrganizer && (
+              {isHost && (
                 <Badge
                   variant="outline"
                   className="text-[9px] sm:text-[10px] uppercase font-bold text-secondary bg-primary border-primary px-1.5 sm:px-2 py-0"
                 >
-                  Organizer
+                  Host
                 </Badge>
               )}
             </div>
@@ -162,7 +164,7 @@ export default function VenueReviewItem({
       {review.replies && review.replies.length > 0 && (
         <div className="mt-4 space-y-2">
           {review.replies.map((reply) => (
-            <VenueReviewItem key={reply.id} review={reply} isReply={true} />
+            <VenueReviewItem key={reply.id} review={reply} isReply={true} hostUserId={hostUserId} />
           ))}
         </div>
       )}

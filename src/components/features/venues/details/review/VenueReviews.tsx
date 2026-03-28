@@ -7,9 +7,10 @@ import VenueReviewList from "./VenueReviewList";
 
 interface VenueReviewsProps {
   courtId: string;
+  hostUserId?: string;
 }
 
-export default function VenueReviews({ courtId }: VenueReviewsProps) {
+export default function VenueReviews({ courtId, hostUserId }: VenueReviewsProps) {
   // QUERY FOR REVIEWS
   const { data, isLoading } = useReviewsQuery({
     courtId,
@@ -47,7 +48,7 @@ export default function VenueReviews({ courtId }: VenueReviewsProps) {
           <div className="h-24 animate-pulse bg-primary/5 rounded-sm" />
         </div>
       ) : (
-        <VenueReviewList reviews={reviews} />
+        <VenueReviewList reviews={reviews} hostUserId={hostUserId} />
       )}
     </section>
   );

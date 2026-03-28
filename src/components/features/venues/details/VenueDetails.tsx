@@ -601,7 +601,10 @@ export default function VenueDetails({ venue }: VenueDetailsProps) {
 
         {/* Reviews & Community Section  */}
         <div className="lg:col-span-8 lg:col-start-1 lg:mt-5">
-          <VenueReviews courtId={venue.id} />
+          <VenueReviews 
+            courtId={venue.id} 
+            hostUserId={venue.organizer.user?.id} 
+          />
         </div>
       </div>
     </main>

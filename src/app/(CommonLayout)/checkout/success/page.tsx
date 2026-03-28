@@ -2,11 +2,12 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { CheckCircle2, Clock3, ReceiptText } from "lucide-react";
+import { useEffect, useState, Suspense } from "react";
+import { CheckCircle2, Clock3, ReceiptText, AlertCircle } from "lucide-react";
 import { BookingService } from "@/service/booking.service";
 import { Booking } from "@/types/booking.types";
 import Loading from "@/app/loading";
+import { toast } from "sonner";
 
 const getStatusLabel = (status?: Booking["status"]) => {
   if (status === "PAID") return "Payment Confirmed";
@@ -15,7 +16,7 @@ const getStatusLabel = (status?: Booking["status"]) => {
   return "Pending";
 };
 
-export default function SuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("bookingId");
 
@@ -35,7 +36,7 @@ export default function SuccessPage() {
         const data = await BookingService.getBookingById(bookingId);
         setBooking(data);
       } catch (error) {
-        console.error("Failed to fetch booking:", error);
+        toast.error("Failed to fetch booking");
       } finally {
         setLoading(false);
       }
@@ -46,6 +47,26 @@ export default function SuccessPage() {
 
   if (loading) {
     return <Loading></Loading>;
+  }
+
+  if (!bookingId || !booking) {
+    return (
+      <main className="flex min-h-[60vh] flex-col items-center justify-center py-10">
+        <AlertCircle className="mb-4 h-16 w-16 text-destructive" />
+        <h1 className="mb-2 font-heading text-3xl font-black uppercase text-foreground">
+          Booking Not Found
+        </h1>
+        <p className="mb-6 text-muted-foreground">
+          We couldn't track down the details for this booking.
+        </p>
+        <Link
+          href="/"
+          className="rounded-sm bg-primary px-6 py-3 font-heading text-sm font-black uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          Return to Home
+        </Link>
+      </main>
+    );
   }
 
   return (
@@ -197,6 +218,14 @@ export default function SuccessPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <SuccessContent />
+    </Suspense>
   );
 }
 
