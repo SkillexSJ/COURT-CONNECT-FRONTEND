@@ -182,6 +182,7 @@ function FilterContent({
         >
           <option value="-createdAt">Newest</option>
           <option value="createdAt">Oldest</option>
+          <option value="-rating">Highest Rated/Popular</option>
           <option value="basePrice">Price: Low to High</option>
           <option value="-basePrice">Price: High to Low</option>
           <option value="name">Name: A-Z</option>
