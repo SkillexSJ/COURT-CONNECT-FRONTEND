@@ -39,11 +39,9 @@ export default function VenueBookingSidebar({
     typeof basePrice === "string" ? parseFloat(basePrice) : basePrice;
   const hasProvidedDiscountedBase =
     typeof totalPrice === "number" && totalPrice > 0;
-  const discountedBase = hasProvidedDiscountedBase
+  const total = hasProvidedDiscountedBase
     ? totalPrice
     : Math.max(0, priceValue - discountAmount);
-  const taxAmount = discountedBase * 0.18;
-  const total = discountedBase + taxAmount;
 
   return (
     <div className="lg:col-span-4">
@@ -97,10 +95,6 @@ export default function VenueBookingSidebar({
               <span>-${discountAmount.toFixed(2)}</span>
             </div>
           ) : null}
-          <div className="flex justify-between text-white/60 font-medium text-xs uppercase tracking-widest">
-            <span>Tax (18%)</span>
-            <span>${taxAmount.toFixed(2)}</span>
-          </div>
           <div className="flex items-end justify-between border-t border-white/20 pt-5 sm:pt-6">
             <span className="text-white/60 font-bold text-xs uppercase tracking-widest">
               Total Amount
