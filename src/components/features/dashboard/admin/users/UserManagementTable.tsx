@@ -48,10 +48,6 @@ export default function UserManagementTable() {
     placeholderData: keepPreviousData,
   });
 
-  if (usersQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED VALUES FOR USERS
   const users = useMemo(
     () => usersQuery.data?.data ?? [],
@@ -96,6 +92,10 @@ export default function UserManagementTable() {
   /**
    * MAIN UI COMPONENT
    */
+  if (usersQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <div className="space-y-6">
       <header className="space-y-2">

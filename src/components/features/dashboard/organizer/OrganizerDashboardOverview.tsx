@@ -85,10 +85,6 @@ export default function OrganizerDashboardOverview() {
     staleTime: 20_000,
   });
 
-  if (courtsQuery.isPending || (courts.length > 0 && bookingsQuery.isPending)) {
-    return <DashboardSkeleton />;
-  }
-
   const bookings = useMemo(
     () => bookingsQuery.data ?? [],
     [bookingsQuery.data],
@@ -186,6 +182,10 @@ export default function OrganizerDashboardOverview() {
       VENUE_FALLBACK_IMAGE
     );
   };
+
+  if (courtsQuery.isPending || (courts.length > 0 && bookingsQuery.isPending)) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

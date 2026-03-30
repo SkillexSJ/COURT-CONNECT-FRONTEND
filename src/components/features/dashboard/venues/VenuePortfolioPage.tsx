@@ -51,10 +51,6 @@ export default function VenuePortfolioPage({ role }: VenuePortfolioPageProps) {
     staleTime: 60_000,
   });
 
-  if (venuesQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   const venues = venuesQuery.data ?? [];
 
   // MUTATION FOR UPDATING VENUE STATUS
@@ -81,6 +77,10 @@ export default function VenuePortfolioPage({ role }: VenuePortfolioPageProps) {
   );
   const avgOccupancy =
     totalAssets === 0 ? 0 : Math.round((totalBookings / totalAssets) * 7.5);
+
+  if (venuesQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-8">

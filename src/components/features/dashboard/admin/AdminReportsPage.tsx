@@ -65,10 +65,6 @@ export default function AdminReportsPage() {
     staleTime: 60_000,
   });
 
-  if (reportsQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED REPORTS
   const report = reportsQuery.data?.data;
 
@@ -79,6 +75,10 @@ export default function AdminReportsPage() {
   );
 
   const topCourtType = report?.courtTypePerformance[0] ?? null;
+
+  if (reportsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

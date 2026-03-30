@@ -69,10 +69,6 @@ export default function AdminDashboardOverview() {
     staleTime: 60_000,
   });
 
-  if (usersQuery.isPending || pendingCourtsQuery.isPending || topCourtQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   const topCourt = topCourtQuery.data;
 
   // MEMOIZED USERS
@@ -116,6 +112,10 @@ export default function AdminDashboardOverview() {
       registrations: count,
     }));
   }, [users]);
+
+  if (usersQuery.isPending || pendingCourtsQuery.isPending || topCourtQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

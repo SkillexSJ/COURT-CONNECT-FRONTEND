@@ -95,10 +95,6 @@ export default function ScheduleManagementPage() {
     staleTime: 60_000,
   });
 
-  if (courtsQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED VALUES
   const courts = useMemo(() => courtsQuery.data ?? [], [courtsQuery.data]);
   const effectiveCourtId = selectedCourtId || courts[0]?.id || "";
@@ -244,6 +240,10 @@ export default function ScheduleManagementPage() {
       </div>
     );
   };
+
+  if (courtsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

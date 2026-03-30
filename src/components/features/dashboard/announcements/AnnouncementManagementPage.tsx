@@ -153,10 +153,6 @@ export default function AnnouncementManagementPage({
     (announcementsQuery.isPending && (role === "ADMIN" || Boolean(activeCourtId))) ||
     (role === "ORGANIZER" && organizerCourtsQuery.isPending);
 
-  if (isInitialLoading) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED VALUES
   const announcements = useMemo(
     () => announcementsQuery.data?.data ?? [],
@@ -292,6 +288,10 @@ export default function AnnouncementManagementPage({
       organizerCourts.find((court) => court.id === activeCourtId)?.name ?? ""
     );
   }, [activeCourtId, organizerCourts]);
+
+  if (isInitialLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

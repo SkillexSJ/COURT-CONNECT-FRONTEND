@@ -65,10 +65,6 @@ export default function UserDashboardOverview() {
     staleTime: 30_000,
   });
 
-  if (bookingsQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   const bookings = useMemo(
     () => bookingsQuery.data?.data ?? [],
     [bookingsQuery.data?.data],
@@ -128,6 +124,10 @@ export default function UserDashboardOverview() {
         .slice(0, 5),
     [bookings],
   );
+
+  if (bookingsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

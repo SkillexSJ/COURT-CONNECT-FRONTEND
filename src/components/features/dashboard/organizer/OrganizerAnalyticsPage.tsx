@@ -27,10 +27,6 @@ export default function OrganizerAnalyticsPage() {
     staleTime: 60_000,
   });
 
-  if (revenueBreakdownQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   const revenueBreakdown = revenueBreakdownQuery.data?.data;
 
   // MEMOIZED VALUES
@@ -70,6 +66,10 @@ export default function OrganizerAnalyticsPage() {
       ) ?? null
     );
   };
+
+  if (revenueBreakdownQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

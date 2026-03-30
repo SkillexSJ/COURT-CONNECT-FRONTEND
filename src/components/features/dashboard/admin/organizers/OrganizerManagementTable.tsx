@@ -50,10 +50,6 @@ export default function OrganizerManagementTable() {
     placeholderData: keepPreviousData,
   });
 
-  if (usersQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED VALUES
   const allUsers = useMemo(
     () => usersQuery.data?.data ?? [],
@@ -125,6 +121,9 @@ export default function OrganizerManagementTable() {
   /**
    * MAIN UI COMPONENT
    */
+  if (usersQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

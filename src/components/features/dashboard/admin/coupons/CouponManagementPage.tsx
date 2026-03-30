@@ -151,10 +151,6 @@ export default function CouponManagementPage() {
     placeholderData: keepPreviousData,
   });
 
-  if (couponsQuery.isPending) {
-    return <DashboardSkeleton />;
-  }
-
   // MEMOIZED COUPONS
   const coupons = useMemo(
     () => couponsQuery.data?.data ?? [],
@@ -322,6 +318,10 @@ export default function CouponManagementPage() {
 
     createCouponMutation.mutate(createPayload);
   };
+
+  if (couponsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
