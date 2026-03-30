@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { courtService } from "@/service/court.service";
 import type { CourtStatus, UpdateCourtPayload } from "@/types/court.types";
-import Loading from "@/app/loading";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 /**
  * THIS COMPONENT IS ENCOURAGED FROM MY SKILLBRIDGE PROJECT
@@ -132,8 +132,8 @@ export default function VenueDetailsEditorPage({
     return role === "ADMIN" ? "Venue Review" : "Edit Venue Details";
   }, [role]);
 
-  if (venueQuery.isLoading) {
-    return <Loading />;
+  if (venueQuery.isPending) {
+    return <DashboardSkeleton />;
   }
 
   if (!venue) {

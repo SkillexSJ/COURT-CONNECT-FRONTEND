@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 import { organizerService } from "@/service/organizer.service";
 import { CircleDollarSign, Building2, Timer } from "lucide-react";
 
@@ -25,6 +26,10 @@ export default function OrganizerAnalyticsPage() {
     queryFn: () => organizerService.getRevenueBreakdown({ days: 90 }),
     staleTime: 60_000,
   });
+
+  if (revenueBreakdownQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   const revenueBreakdown = revenueBreakdownQuery.data?.data;
 

@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { TicketPercent, Percent, WalletCards } from "lucide-react";
 import { toast } from "sonner";
 
 import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -147,7 +148,12 @@ export default function CouponManagementPage() {
         searchTerm: search.trim() || undefined,
       }),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   });
+
+  if (couponsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   // MEMOIZED COUPONS
   const coupons = useMemo(

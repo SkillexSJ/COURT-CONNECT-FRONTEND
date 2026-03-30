@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,6 +94,10 @@ export default function ScheduleManagementPage() {
     },
     staleTime: 60_000,
   });
+
+  if (courtsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   // MEMOIZED VALUES
   const courts = useMemo(() => courtsQuery.data ?? [], [courtsQuery.data]);

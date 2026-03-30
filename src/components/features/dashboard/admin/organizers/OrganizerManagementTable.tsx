@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { IconCheck, IconUserDown } from "@tabler/icons-react";
 import { UserCheck, Users, UserRoundPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import { DashboardStatCard } from "@/components/features/dashboard/shared/Dashbo
 import { cn } from "@/lib/utils";
 import { adminService } from "@/service/admin.service";
 import type { AdminUser } from "@/types/admin.types";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 /**
  * THIS IS A ROBUST ORGANIZER MANAGEMENT TABLE FOR ADMINS
@@ -46,7 +47,12 @@ export default function OrganizerManagementTable() {
         sortBy: "-createdAt",
       }),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   });
+
+  if (usersQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   // MEMOIZED VALUES
   const allUsers = useMemo(

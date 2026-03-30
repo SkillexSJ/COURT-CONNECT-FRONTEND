@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { adminService } from "@/service/admin.service";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 const money = (value: number) => `USD ${value.toFixed(2)}`;
 
@@ -63,6 +64,10 @@ export default function AdminReportsPage() {
     queryFn: () => adminService.getReports({ days: rangeDays }),
     staleTime: 60_000,
   });
+
+  if (reportsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   // MEMOIZED REPORTS
   const report = reportsQuery.data?.data;
@@ -290,9 +295,6 @@ export default function AdminReportsPage() {
         </div>
       </div>
 
-      {reportsQuery.isLoading ? (
-        <p className="text-xs text-muted-foreground">Loading reports...</p>
-      ) : null}
       {reportsQuery.isError ? (
         <p className="text-xs text-destructive">Failed to load reports data.</p>
       ) : null}

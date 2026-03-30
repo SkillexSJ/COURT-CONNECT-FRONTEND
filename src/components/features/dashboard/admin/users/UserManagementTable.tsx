@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { IconCheck } from "@tabler/icons-react";
 import { Users, CalendarCheck2, CircleDollarSign } from "lucide-react";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
 import { cn } from "@/lib/utils";
 import { adminService } from "@/service/admin.service";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 type FilterMode = "ALL_USERS" | "ACTIVE_BOOKERS" | "NO_BOOKINGS";
 
@@ -44,7 +45,12 @@ export default function UserManagementTable() {
         sortBy: "-createdAt",
       }),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   });
+
+  if (usersQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   // MEMOIZED VALUES FOR USERS
   const users = useMemo(

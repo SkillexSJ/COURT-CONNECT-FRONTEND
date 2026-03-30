@@ -25,7 +25,7 @@ import { VenuePageHeader } from "./sections/VenuePageHeader";
 import { CourtAmenity } from "@/types/court.types";
 import { courtService } from "@/service/court.service";
 import { organizerService } from "@/service/organizer.service";
-import Loading from "@/app/loading";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SPORT_TYPES } from "@/lib/constants/sports";
@@ -217,8 +217,8 @@ export function VenueAddingPage() {
   );
   const profileLoadFailed = organizerProfileQuery.isError;
 
-  if (organizerProfileQuery.isLoading) {
-    return <Loading />;
+  if (organizerProfileQuery.isPending) {
+    return <DashboardSkeleton />;
   }
 
   if (profileLoadFailed || !isOrganizerVerified) {

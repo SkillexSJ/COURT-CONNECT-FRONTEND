@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 import { courtService } from "@/service/court.service";
 import { cn } from "@/lib/utils";
 import type { CourtListItem } from "@/types/court.types";
@@ -49,6 +50,10 @@ export default function VenuePortfolioPage({ role }: VenuePortfolioPageProps) {
     },
     staleTime: 60_000,
   });
+
+  if (venuesQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   const venues = venuesQuery.data ?? [];
 
