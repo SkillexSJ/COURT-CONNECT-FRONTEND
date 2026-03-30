@@ -22,6 +22,7 @@ import { adminService } from "@/service/admin.service";
 import { courtService } from "@/service/court.service";
 import { useApproveCourtMutation } from "@/hooks/queries/use-court-mutation";
 import { toast } from "sonner";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 // FOR DYNAMIC IMPORT
 const AdminDashboardCharts = dynamic(
@@ -67,6 +68,10 @@ export default function AdminDashboardOverview() {
     },
     staleTime: 60_000,
   });
+
+  if (usersQuery.isPending || pendingCourtsQuery.isPending || topCourtQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   const topCourt = topCourtQuery.data;
 

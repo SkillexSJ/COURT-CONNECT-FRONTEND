@@ -19,6 +19,8 @@ import { DashboardStatCard } from "@/components/features/dashboard/shared/Dashbo
 import { BookingService } from "@/service/booking.service";
 import { VENUE_FALLBACK_IMAGE } from "@/lib/placeholders";
 
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
+
 // DYNAMIC IMPORT FOR USER DASHBOARD CHARTS
 const UserDashboardCharts = dynamic(
   () => import("./UserDashboardCharts").then((mod) => mod.UserDashboardCharts),
@@ -62,6 +64,10 @@ export default function UserDashboardOverview() {
     queryFn: () => BookingService.getUserBookings({ limit: 100 }),
     staleTime: 30_000,
   });
+
+  if (bookingsQuery.isPending) {
+    return <DashboardSkeleton />;
+  }
 
   const bookings = useMemo(
     () => bookingsQuery.data?.data ?? [],

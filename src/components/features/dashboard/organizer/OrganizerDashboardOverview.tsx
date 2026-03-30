@@ -31,6 +31,7 @@ import {
 import { DashboardStatCard } from "@/components/features/dashboard/shared/DashboardStatCard";
 import { BookingService } from "@/service/booking.service";
 import { courtService } from "@/service/court.service";
+import { DashboardSkeleton } from "@/components/features/dashboard/shared/dashboard-skeleton";
 
 // DYNAMIC IMPORT FOR CHARTS
 const OrganizerDashboardCharts = dynamic(
@@ -83,6 +84,10 @@ export default function OrganizerDashboardOverview() {
     },
     staleTime: 20_000,
   });
+
+  if (courtsQuery.isPending || (courts.length > 0 && bookingsQuery.isPending)) {
+    return <DashboardSkeleton />;
+  }
 
   const bookings = useMemo(
     () => bookingsQuery.data ?? [],
