@@ -1,5 +1,5 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { streamText, tool } from "ai";
+import { streamText, tool, convertToModelMessages } from "ai";
 import { z } from "zod";
 
 export const maxDuration = 30;
@@ -36,7 +36,7 @@ Rules:
 - Link courts like: [Court Name](/venues/slug)
 - If no results, politely suggest refining search`,
 
-      messages,
+      messages: await convertToModelMessages(messages),
 
       tools: {
         searchCourts: tool({
