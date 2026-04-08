@@ -161,9 +161,17 @@ export function ChatAssistant() {
         )}
 
         {error && (
-          <div className="flex justify-center mt-2">
+          <div className="flex flex-col items-center justify-center mt-2 gap-2">
             <div className="bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800 text-xs px-4 py-2 rounded-xl flex items-center shadow-sm max-w-[90%] text-center">
-              <span>⚠️ <strong>Error:</strong> {error.message || "An unexpected error occurred."}</span>
+              <span>⚠️ <strong>Error:</strong> {
+                (() => {
+                  try {
+                    return JSON.parse(error.message).error || error.message;
+                  } catch {
+                    return error.message || "An unexpected error occurred.";
+                  }
+                })()
+              }</span>
             </div>
           </div>
         )}
@@ -181,12 +189,12 @@ export function ChatAssistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            disabled={status !== "ready"}
+            disabled={isLoading}
             className="flex-1 bg-transparent text-sm text-foreground outline-none border-0 focus:ring-0 placeholder:text-muted-foreground"
           />
           <button
             type="submit"
-            disabled={status !== "ready" || !input.trim()}
+            disabled={isLoading || !input.trim()}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
           >
             <Send size={14} />

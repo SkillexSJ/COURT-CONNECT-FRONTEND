@@ -1,4 +1,4 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText, tool, convertToModelMessages, stepCountIs } from "ai";
 import { z } from "zod";
 
@@ -8,22 +8,22 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "Gemini API key not configured." }),
+        JSON.stringify({ error: "OpenRouter API key not configured." }),
         { status: 500 },
       );
     }
 
-    const google = createGoogleGenerativeAI({ apiKey });
+    const openrouter = createOpenRouter({ apiKey });
 
     const backendUrl =
       process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
     const result = streamText({
-      model: google("gemini-2.5-flash"),
+      model: openrouter("meta-llama/llama-3.3-70b-instruct:free"),
       maxRetries: 0,
 
       system: `You are CourtConnect's smart AI assistant named "CourtBot".
