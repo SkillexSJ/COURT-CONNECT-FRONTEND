@@ -1,5 +1,7 @@
 import type { UseFormReturn } from "react-hook-form";
-
+import { useState } from "react";
+import { aiService } from "@/service/ai.service";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +15,33 @@ type Props = {
 };
 
 export function CourtDetailsSection({ form }: Props) {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerateAI = async () => {
+    const name = form.watch("name");
+    const type = form.watch("type");
+    const locationLabel = form.watch("locationLabel");
+
+    setIsGenerating(true);
+    try {
+      const response = await aiService.generateDescription({
+        name,
+        type,
+        locationLabel,
+      });
+      if (response.success && response.data?.description) {
+        form.setValue("description", response.data.description, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+    } catch (error) {
+      console.error("AI Generation failed:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <Card className="rounded-sm border-border bg-card">
       <CardHeader>
@@ -74,9 +103,21 @@ export function CourtDetailsSection({ form }: Props) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
-            Court Narrative (Description)
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label className="text-[10px] font-black tracking-widest text-primary/70 uppercase">
+              Court Narrative (Description)
+            </Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-7 px-3 text-[10px] font-black uppercase tracking-wider bg-linear-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90 border-0"
+              onClick={handleGenerateAI}
+              disabled={isGenerating}
+            >
+              {isGenerating ? "Generating..." : "✨ Auto-Write"}
+            </Button>
+          </div>
           <textarea
             {...form.register("description")}
             rows={4}
