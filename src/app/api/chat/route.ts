@@ -37,7 +37,19 @@ Rules:
 - Link courts like: [Court Name](/venues/slug)
 - If no results, politely suggest refining search`,
 
-      messages: await convertToModelMessages(messages),
+      messages: await convertToModelMessages(
+        messages.map((m: any) => {
+          if (m.role === "assistant" && m.toolInvocations) {
+            return {
+              ...m,
+              toolInvocations: m.toolInvocations.filter(
+                (t: any) => t.state === "result" && t.result !== undefined
+              ),
+            };
+          }
+          return m;
+        })
+      ),
 
       stopWhen: stepCountIs(5), // steps for thinking
 
