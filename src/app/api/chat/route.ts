@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
     const result = streamText({
-      model: openrouter("meta-llama/llama-3.3-70b-instruct:free"),
+      model: openrouter("z-ai/glm-4.5-air:free"),
       maxRetries: 0,
 
       system: `You are CourtConnect's smart AI assistant named "CourtBot".
