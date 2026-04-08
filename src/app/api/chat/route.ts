@@ -1,5 +1,5 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { streamText, tool, convertToModelMessages } from "ai";
+import { streamText, tool, convertToModelMessages, stepCountIs } from "ai";
 import { z } from "zod";
 
 export const maxDuration = 30;
@@ -37,6 +37,8 @@ Rules:
 - If no results, politely suggest refining search`,
 
       messages: await convertToModelMessages(messages),
+
+      stopWhen: stepCountIs(5), // steps for thinking
 
       tools: {
         searchCourts: tool({

@@ -9,7 +9,7 @@ import Link from "next/link";
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
 
-  //  Correct v5 API
+  // v5 API
   const { messages, sendMessage, status } = useChat();
 
   const [input, setInput] = useState("");
