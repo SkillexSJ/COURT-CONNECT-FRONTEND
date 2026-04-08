@@ -125,20 +125,54 @@ export function ChatAssistant() {
                 {m.parts?.map((part: any, i: number) => {
                   if (part.type === "tool-invocation") {
                     return (
-                      <div
-                        key={i}
-                        className="mt-2 text-xs text-muted-foreground flex items-center gap-1"
-                      >
-                        {part.state === "result" ? (
-                          <span className="flex items-center gap-1 font-medium px-2 py-1 bg-secondary text-secondary-foreground rounded-md shadow-xs">
-                            ✓ Searched Database
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 animate-pulse px-2 py-1 bg-muted rounded-md text-muted-foreground shadow-xs">
-                            <Loader2 size={12} className="animate-spin" />
-                            Searching courts...
-                          </span>
+                      <div key={i} className="mt-2 flex flex-col gap-2 w-full">
+                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                          {part.state === "result" ? (
+                            <span className="flex items-center gap-1 font-medium px-2 py-1 bg-secondary/50 text-secondary-foreground rounded-md">
+                              ✓ Found Courts
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 animate-pulse px-2 py-1 bg-muted rounded-md text-muted-foreground shadow-xs">
+                              <Loader2 size={12} className="animate-spin" />
+                              Searching courts...
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Render tool results directly in the UI */}
+                        {part.state === "result" && part.result?.success && Array.isArray(part.result.courts) && (
+                          <div className="flex flex-col gap-2 mt-1">
+                            {part.result.courts.length > 0 ? (
+                              part.result.courts.map((court: any) => (
+                                <Link 
+                                  href={`/venues/${court.slug}`} 
+                                  key={court.id}
+                                  className="group flex flex-col gap-1 rounded-xl border border-border bg-background p-3 transition-colors hover:border-primary/50 hover:bg-muted/30"
+                                >
+                                  <div className="flex justify-between items-start gap-2">
+                                    <span className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">{court.name}</span>
+                                    <span className="font-semibold text-primary text-xs shrink-0">${court.price}/hr</span>
+                                  </div>
+                                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
+                                    <span>{court.type}</span>
+                                    <span className="truncate max-w-[120px]">{court.location}</span>
+                                  </div>
+                                </Link>
+                              ))
+                            ) : (
+                              <div className="text-sm p-3 bg-muted/50 rounded-xl border border-border border-dashed text-center text-foreground">
+                                No courts found matching your criteria. Try adjusting your search.
+                              </div>
+                            )}
+                          </div>
                         )}
+                        
+                        {part.state === "result" && part.result?.success === false && (
+                          <div className="text-red-500 text-xs px-2 mt-1">
+                            Failed to search: {part.result.message}
+                          </div>
+                        )}
+
                       </div>
                     );
                   }
