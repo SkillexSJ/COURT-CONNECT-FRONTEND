@@ -48,22 +48,30 @@ Rules:
             searchTerm: z
               .string()
               .optional()
-              .describe("Sport type or court name"),
-            location: z.string().optional().describe("City or area"),
-            maxPrice: z.number().optional().describe("Maximum price"),
+              .describe("Search query for court name"),
+            location: z.string().optional().describe("Exact city or area (e.g., 'Nevada', 'Dhaka')"),
+            type: z.string().optional().describe("Specific sport type (e.g., 'Tennis', 'Badminton', 'Futsal', 'Clay Court')"),
+            maxPrice: z.number().optional().describe("Maximum price limit"),
           }),
 
           // TypeScript fix
-          async execute({ searchTerm, location, maxPrice }) {
+          async execute({ searchTerm, location, type, maxPrice }) {
             try {
               const queryParams = new URLSearchParams();
 
+              // Use searchTerm for purely the name
               if (searchTerm) {
                 queryParams.append("searchTerm", searchTerm);
               }
 
+              // Send location 
               if (location) {
-                queryParams.append("location", location);
+                queryParams.append("locationLabel_contains", location);
+              }
+
+              // Use the actual 'type'
+              if (type) {
+                queryParams.append("type", type);
               }
 
               if (maxPrice) {
