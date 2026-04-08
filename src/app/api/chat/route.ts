@@ -24,6 +24,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: google("gemini-2.5-flash"),
+      maxRetries: 0,
 
       system: `You are CourtConnect's smart AI assistant named "CourtBot".
 You help users find sports facilities and courts.
@@ -48,25 +49,20 @@ Rules:
             searchTerm: z
               .string()
               .optional()
-              .describe("Search query for court name"),
-            location: z.string().optional().describe("Exact city or area (e.g., 'Nevada', 'Dhaka')"),
+              .describe("Search query for name or location (e.g., 'Nevada', 'Dhaka', 'Downtown')"),
             type: z.string().optional().describe("Specific sport type (e.g., 'Tennis', 'Badminton', 'Futsal', 'Clay Court')"),
             maxPrice: z.number().optional().describe("Maximum price limit"),
+            sortBy: z.enum(["-rating", "basePrice", "-basePrice"]).optional().describe("Sort order. Use '-rating' for 'best'/'popular', 'basePrice' for 'cheapest', '-basePrice' for 'most expensive'."),
           }),
 
           // TypeScript fix
-          async execute({ searchTerm, location, type, maxPrice }) {
+          async execute({ searchTerm, type, maxPrice, sortBy }) {
             try {
               const queryParams = new URLSearchParams();
 
               // Use searchTerm for purely the name
               if (searchTerm) {
                 queryParams.append("searchTerm", searchTerm);
-              }
-
-              // Send location 
-              if (location) {
-                queryParams.append("locationLabel_contains", location);
               }
 
               // Use the actual 'type'
@@ -76,6 +72,10 @@ Rules:
 
               if (maxPrice) {
                 queryParams.append("basePrice_lte", maxPrice.toString());
+              }
+
+              if (sortBy) {
+                queryParams.append("sortBy", sortBy);
               }
 
               const url = `${backendUrl}/api/courts?${queryParams.toString()}`;

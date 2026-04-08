@@ -9,8 +9,8 @@ import Link from "next/link";
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // v5 API
-  const { messages, sendMessage, status } = useChat();
+  //  v5 API
+  const { messages, sendMessage, status, error } = useChat();
 
   const [input, setInput] = useState("");
 
@@ -156,6 +156,14 @@ export function ChatAssistant() {
               <span className="flex gap-1 items-center text-xs animate-pulse">
                 Thinking...
               </span>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex justify-center mt-2">
+            <div className="bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800 text-xs px-4 py-2 rounded-xl flex items-center shadow-sm max-w-[90%] text-center">
+              <span>⚠️ <strong>Error:</strong> {error.message || "An unexpected error occurred."}</span>
             </div>
           </div>
         )}
