@@ -3,6 +3,7 @@ import { Geist_Mono, Lexend, Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ChatAssistant } from "@/components/shared/ChatAssistant";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -47,6 +48,7 @@ export default function RootLayout({
         <QueryProvider>
           <Toaster position="top-left" />
           {children}
+          <ChatAssistant />
         </QueryProvider>
       </body>
     </html>
