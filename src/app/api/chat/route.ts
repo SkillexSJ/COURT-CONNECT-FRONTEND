@@ -4,6 +4,15 @@ import { z } from "zod";
 
 export const maxDuration = 30;
 
+type CourtItem = {
+  id: string;
+  slug: string;
+  name: string;
+  type: string;
+  basePrice: number;
+  locationLabel: string;
+};
+
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
@@ -20,7 +29,9 @@ export async function POST(req: Request) {
     const openrouter = createOpenRouter({ apiKey });
 
     const backendUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      process.env.BACKEND_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_URL ||
+      "http://localhost:5000";
 
     const result = streamText({
       model: openrouter("z-ai/glm-4.5-air:free"),
@@ -37,19 +48,7 @@ Rules:
 - Link courts like: [Court Name](/venues/slug)
 - If no results, politely suggest refining search`,
 
-      messages: await convertToModelMessages(
-        messages.map((m: any) => {
-          if (m.role === "assistant" && m.toolInvocations) {
-            return {
-              ...m,
-              toolInvocations: m.toolInvocations.filter(
-                (t: any) => t.state === "result" && t.result !== undefined
-              ),
-            };
-          }
-          return m;
-        })
-      ),
+      messages: await convertToModelMessages(messages),
 
       stopWhen: stepCountIs(5), // steps for thinking
 
@@ -61,10 +60,25 @@ Rules:
             searchTerm: z
               .string()
               .optional()
-              .describe("Search query for name or location (e.g., 'Nevada', 'Dhaka', 'Downtown')"),
-            type: z.string().optional().describe("Specific sport type (e.g., 'Tennis', 'Badminton', 'Futsal', 'Clay Court')"),
-            maxPrice: z.number().optional().describe("Maximum price limit"),
-            sortBy: z.enum(["-rating", "basePrice", "-basePrice"]).optional().describe("Sort order. Use '-rating' for 'best'/'popular', 'basePrice' for 'cheapest', '-basePrice' for 'most expensive'."),
+              .describe(
+                "Search query for name or location (e.g., 'Nevada', 'Dhaka', 'Downtown')",
+              ),
+            type: z
+              .string()
+              .optional()
+              .describe(
+                "Specific sport type (e.g., 'Tennis', 'Badminton', 'Futsal', 'Clay Court')",
+              ),
+            maxPrice: z.coerce
+              .number()
+              .optional()
+              .describe("Maximum price limit"),
+            sortBy: z
+              .enum(["-rating", "basePrice", "-basePrice"])
+              .optional()
+              .describe(
+                "Sort order. Use '-rating' for 'best'/'popular', 'basePrice' for 'cheapest', '-basePrice' for 'most expensive'.",
+              ),
           }),
 
           // TypeScript fix
@@ -82,7 +96,7 @@ Rules:
                 queryParams.append("type", type);
               }
 
-              if (maxPrice) {
+              if (maxPrice !== undefined) {
                 queryParams.append("basePrice_lte", maxPrice.toString());
               }
 
@@ -103,11 +117,11 @@ Rules:
 
               const data = await res.json();
 
-              const courts = data?.data?.data ?? [];
+              const courts = Array.isArray(data?.data) ? data.data : [];
 
               return {
                 success: true,
-                courts: courts.slice(0, 5).map((court: any) => ({
+                courts: courts.slice(0, 5).map((court: CourtItem) => ({
                   id: court.id,
                   slug: court.slug,
                   name: court.name,
@@ -116,7 +130,7 @@ Rules:
                   location: court.locationLabel,
                 })),
               };
-            } catch (error) {
+            } catch {
               return {
                 success: false,
                 message: "Error retrieving courts.",
@@ -128,7 +142,7 @@ Rules:
     });
 
     return result.toUIMessageStreamResponse();
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Unexpected server error." }), {
       status: 500,
     });
