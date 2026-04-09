@@ -73,6 +73,17 @@ Whether you want to play tennis, basketball, padel, or futsal, Court Connect pro
 
 ---
 
+## 🤖 AI Assistant Feature (CourtBot)
+
+CourtBot helps users find courts and get quick booking/payment help.
+
+- Commands: `/help`, `/commands`, `/booking`, `/payment`, `/organizer`
+- Example: "Find an indoor tennis court under $50"
+- Example: "How do I book a court?"
+- Smart behavior: fewer unnecessary AI calls, short replies, cleaner errors
+
+---
+
 ## 🛠️ Tech Stack
 
 <div align="center">
@@ -161,31 +172,31 @@ Follow these steps to set up the project locally.
 
 ### Installation
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
 
-    ```bash
-    git clone https://github.com/your-username/court-connect-frontend.git
-    cd court-connect-frontend
-    ```
+   ```bash
+   git clone https://github.com/your-username/court-connect-frontend.git
+   cd court-connect-frontend
+   ```
 
-2.  **Install dependencies:**
+2. **Install dependencies:**
 
-    ```bash
-    pnpm install
-    ```
+   ```bash
+   pnpm install
+   ```
 
-3.  **Set up environment variables:**
-    Create a `.env.local` file in the root directory and add necessary variables (see `.env.example`).
-    Make sure to include your Stripe publishable key and other relevant backend endpoints.
+3. **Set up environment variables:**
+   Create a `.env.local` file in the root directory and add necessary variables (see `.env.example`).
+   Make sure to include your Stripe publishable key and other relevant backend endpoints.
 
-4.  **Run the development server:**
+4. **Run the development server:**
 
-    ```bash
-    pnpm dev
-    ```
+   ```bash
+   pnpm dev
+   ```
 
-5.  **Open the app:**
-    Visit `http://localhost:3000` in your browser.
+5. **Open the app:**
+   Visit `http://localhost:3000` in your browser.
 
 ---
 

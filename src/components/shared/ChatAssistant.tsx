@@ -40,6 +40,7 @@ export function ChatAssistant() {
   const [input, setInput] = useState("");
 
   const isLoading = status === "submitted" || status === "streaming";
+  const lastSentRef = useRef<{ text: string; time: number } | null>(null);
 
   const isSearchToolPart = (part: unknown) => {
     if (!part || typeof part !== "object") return false;
@@ -79,13 +80,66 @@ export function ChatAssistant() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const getFriendlyErrorMessage = (rawMessage: string) => {
+    const fallback = "Something went wrong. Please try again.";
+
+    if (!rawMessage) return fallback;
+
+    let parsed = rawMessage;
+
+    try {
+      const asJson = JSON.parse(rawMessage) as {
+        error?: string;
+        message?: string;
+      };
+      parsed = asJson.error || asJson.message || rawMessage;
+    } catch {
+      parsed = rawMessage;
+    }
+
+    const normalized = parsed.toLowerCase();
+
+    if (normalized.includes("openrouter api key not configured")) {
+      return "AI service is not configured yet. Please contact support.";
+    }
+
+    if (normalized.includes("fetch") || normalized.includes("network")) {
+      return "We could not connect to the server. Please check your internet and try again.";
+    }
+
+    if (normalized.includes("rate limit") || normalized.includes("quota")) {
+      return "The AI service is busy right now. Please try again in a moment.";
+    }
+
+    if (normalized.includes("unexpected server error")) {
+      return "Server is having trouble right now. Please try again shortly.";
+    }
+
+    return "We could not process your request right now. Please try a simpler query.";
+  };
+
   //
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!input.trim()) return;
+    const trimmedInput = input.trim();
 
-    sendMessage({ text: input });
+    if (!trimmedInput || isLoading) return;
+
+    const normalizedText = trimmedInput.replace(/\s+/g, " ").toLowerCase();
+    const now = Date.now();
+
+    if (
+      lastSentRef.current &&
+      lastSentRef.current.text === normalizedText &&
+      now - lastSentRef.current.time < 5000
+    ) {
+      return;
+    }
+
+    lastSentRef.current = { text: normalizedText, time: now };
+
+    sendMessage({ text: trimmedInput });
     setInput("");
   };
 
@@ -117,13 +171,21 @@ export function ChatAssistant() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30 text-sm">
+      <div
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
+        className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 bg-muted/30 text-sm"
+      >
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground mt-10">
             <p>👋 Hi! I'm CourtBot.</p>
             <p className="mt-2 text-xs">
               Ask me to find courts, e.g. "Find an indoor tennis court available
               under $50".
+            </p>
+            <p className="mt-2 text-xs">
+              Quick help commands: /help, /commands, /booking, /payment,
+              /organizer
             </p>
           </div>
         )}
@@ -270,13 +332,7 @@ export function ChatAssistant() {
             <div className="bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800 text-xs px-4 py-2 rounded-xl flex items-center shadow-sm max-w-[90%] text-center">
               <span>
                 ⚠️ <strong>Error:</strong>{" "}
-                {(() => {
-                  try {
-                    return JSON.parse(error.message).error || error.message;
-                  } catch {
-                    return error.message || "An unexpected error occurred.";
-                  }
-                })()}
+                {getFriendlyErrorMessage(error.message)}
               </span>
             </div>
           </div>
